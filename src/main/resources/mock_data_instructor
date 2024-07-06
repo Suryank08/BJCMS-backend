@@ -1,0 +1,200 @@
+[
+  {
+    "instructorName": "John Doe",
+    "instructorInfo": {
+      "instructorInfoDetails": "PhD in Computer Science"
+    },
+    "qualificationList": [
+      { "qualificationName": "PhD" },
+      { "qualificationName": "MSc" }
+    ],
+    "subjectList": [
+      { "subjectName": "Mathematics" },
+      { "subjectName": "Physics" }
+    ],
+    "courseList": [
+      { "courseName": "Physics", "courseCost": "1000" },
+      { "courseName": "Chemistry", "courseCost": "4000" }
+    ]
+  },
+  {
+    "instructorName": "Jane Smith",
+    "instructorInfo": {
+      "instructorInfoDetails": "PhD in Physics"
+    },
+    "qualificationList": [
+      { "qualificationName": "PhD" },
+      { "qualificationName": "MSc" }
+    ],
+    "subjectList": [
+      { "subjectName": "Physics" },
+      { "subjectName": "Chemistry" }
+    ],
+    "courseList": [
+      { "courseName": "Mathematics", "courseCost": "1200" },
+      { "courseName": "Biology", "courseCost": "3500" }
+    ]
+  },
+  {
+    "instructorName": "Michael Johnson",
+    "instructorInfo": {
+      "instructorInfoDetails": "PhD in Mathematics"
+    },
+    "qualificationList": [
+      { "qualificationName": "PhD" },
+      { "qualificationName": "MSc" }
+    ],
+    "subjectList": [
+      { "subjectName": "Mathematics" },
+      { "subjectName": "Statistics" }
+    ],
+    "courseList": [
+      { "courseName": "Economics", "courseCost": "1100" },
+      { "courseName": "Finance", "courseCost": "3800" }
+    ]
+  },
+  {
+    "instructorName": "Emily Brown",
+    "instructorInfo": {
+      "instructorInfoDetails": "PhD in Chemistry"
+    },
+    "qualificationList": [
+      { "qualificationName": "PhD" },
+      { "qualificationName": "MSc" }
+    ],
+    "subjectList": [
+      { "subjectName": "Chemistry" },
+      { "subjectName": "Biology" }
+    ],
+    "courseList": [
+      { "courseName": "Physics", "courseCost": "950" },
+      { "courseName": "Mathematics", "courseCost": "4200" }
+    ]
+  },
+  {
+    "instructorName": "David Wilson",
+    "instructorInfo": {
+      "instructorInfoDetails": "PhD in Biology"
+    },
+    "qualificationList": [
+      { "qualificationName": "PhD" },
+      { "qualificationName": "MSc" }
+    ],
+    "subjectList": [
+      { "subjectName": "Biology" },
+      { "subjectName": "Physics" }
+    ],
+    "courseList": [
+      { "courseName": "Chemistry", "courseCost": "1050" },
+      { "courseName": "Geology", "courseCost": "3900" }
+    ]
+  },
+  {
+    "instructorName": "Sophia Martinez",
+    "instructorInfo": {
+      "instructorInfoDetails": "PhD in Physics"
+    },
+    "qualificationList": [
+      { "qualificationName": "PhD" },
+      { "qualificationName": "MSc" }
+    ],
+    "subjectList": [
+      { "subjectName": "Physics" },
+      { "subjectName": "Mathematics" }
+    ],
+    "courseList": [
+      { "courseName": "Chemistry", "courseCost": "980" },
+      { "courseName": "Biology", "courseCost": "4100" }
+    ]
+  },
+  {
+    "instructorName": "Liam Davis",
+    "instructorInfo": {
+      "instructorInfoDetails": "PhD in Statistics"
+    },
+    "qualificationList": [
+      { "qualificationName": "PhD" },
+      { "qualificationName": "MSc" }
+    ],
+    "subjectList": [
+      { "subjectName": "Statistics" },
+      { "subjectName": "Mathematics" }
+    ],
+    "courseList": [
+      { "courseName": "Physics", "courseCost": "1020" },
+      { "courseName": "Chemistry", "courseCost": "3800" }
+    ]
+  },
+  {
+    "instructorName": "Olivia Miller",
+    "instructorInfo": {
+      "instructorInfoDetails": "PhD in Economics"
+    },
+    "qualificationList": [
+      { "qualificationName": "PhD" },
+      { "qualificationName": "MSc" }
+    ],
+    "subjectList": [
+      { "subjectName": "Economics" },
+      { "subjectName": "Finance" }
+    ],
+    "courseList": [
+      { "courseName": "Mathematics", "courseCost": "1080" },
+      { "courseName": "Statistics", "courseCost": "3700" }
+    ]
+  },
+  {
+    "instructorName": "Lucas Garcia",
+    "instructorInfo": {
+      "instructorInfoDetails": "PhD in Finance"
+    },
+    "qualificationList": [
+      { "qualificationName": "PhD" },
+      { "qualificationName": "MSc" }
+    ],
+    "subjectList": [
+      { "subjectName": "Finance" },
+      { "subjectName": "Economics" }
+    ],
+    "courseList": [
+      { "courseName": "Chemistry", "courseCost": "990" },
+      { "courseName": "Biology", "courseCost": "4300" }
+    ]
+  },
+  {
+    "instructorName": "Mia Rodriguez",
+    "instructorInfo": {
+      "instructorInfoDetails": "PhD in Geology"
+    },
+    "qualificationList": [
+      { "qualificationName": "PhD" },
+      { "qualificationName": "MSc" }
+    ],
+    "subjectList": [
+      { "subjectName": "Geology" },
+      { "subjectName": "Chemistry" }
+    ],
+    "courseList": [
+      { "courseName": "Physics", "courseCost": "950" },
+      { "courseName": "Mathematics", "courseCost": "4000" }
+    ]
+  },
+  {
+    "instructorName": "Ethan Martinez",
+    "instructorInfo": {
+      "instructorInfoDetails": "PhD in Literature"
+    },
+    "qualificationList": [
+      { "qualificationName": "PhD" },
+      { "qualificationName": "MSc" }
+    ],
+    "subjectList": [
+      { "subjectName": "Literature" },
+      { "subjectName": "History" }
+    ],
+    "courseList": [
+      { "courseName": "Art", "courseCost": "1100" },
+      { "courseName": "Music", "courseCost": "3800" }
+    ]
+  }
+]
