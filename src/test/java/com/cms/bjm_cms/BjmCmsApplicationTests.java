@@ -1,4 +1,4 @@
-package com.cms.bjm_cms;
+package com.bjcms;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

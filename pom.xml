@@ -8,10 +8,10 @@
 		<version>3.3.0</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.cms</groupId>
-	<artifactId>bjm-cms</artifactId>
+	<groupId>bjcms</groupId>
+	<artifactId>com.bjcms</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>bjm-cms</name>
+	<name>bjcms</name>
 	<description>A coaching Management System</description>
 	<url/>
 	<licenses>
