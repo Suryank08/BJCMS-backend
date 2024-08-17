@@ -3,20 +3,15 @@ package com.bjcms.rest.course;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.bjcms.entity.course.offline.Batch;
 import com.bjcms.service.course.offline.BatchService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api/batchs")
 public class BatchRestController {
     private BatchService batchService;
 
@@ -25,27 +20,40 @@ public class BatchRestController {
         this.batchService = batchService;
     }
 
-    @GetMapping("/batchs")
-    public List<Batch> getAllBatch(){
-        return batchService.getAllBatch();
+    @PostMapping("/create")
+    @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR')")
+    public Batch addBatch(@RequestBody Batch batch) {
+        return batchService.addBatch(batch);
     }
-    @GetMapping("/batchs/{batchId}")
-    public Batch getBatch(@PathVariable int batchId){
-        return batchService.findBatch(batchId);
+
+    @PostMapping("/bulk-create")
+    @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR')")
+    public List<Batch> addBatchList(@RequestBody List<Batch> batchList) {
+        return batchService.addBatch(batchList);
     }
-//    @PostMapping("/batchs")
-//    public List<Batch> addBatch(@RequestBody List<Batch> batchList){
-//        System.out.println("Added Batch");
-//        return batchService.addBatch(batchList);
-//
-//    }
-    @DeleteMapping("/batchs/{batchId}")
-    public void deleteBatch(@PathVariable int batchId){
-        batchService.deleteBatch(batchId);
-        System.out.println("Batch Deleted");
-    }
-    @PutMapping("/batchs")
-    public Batch updateBatch(@RequestBody Batch batch){
+
+    @PostMapping("/update")
+    @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR')")
+    public Batch updateBatch(@RequestBody Batch batch) {
         return batchService.updateBatch(batch);
     }
+
+    @GetMapping("/")
+    @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR','STUDENT','USER')")
+    public List<Batch> getAllBatch() {
+        return batchService.getAllBatch();
+    }
+
+    @GetMapping("/{batchId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR','STUDENT','USER')")
+    public Batch getBatch(@PathVariable Integer batchId) {
+        return batchService.findBatch(batchId);
+    }
+
+    @DeleteMapping("/delete/{batchId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public void deleteBatch(@PathVariable Integer batchId) {
+        batchService.deleteBatch(batchId);
+    }
+
 }

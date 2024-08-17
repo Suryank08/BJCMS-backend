@@ -7,19 +7,11 @@ import java.util.List;
 import com.bjcms.entity.course.offline.OfflineCourse;
 import com.bjcms.entity.course.online.OnlineCourse;
 import com.bjcms.entity.instructor.Instructor;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 //@Data
 //@Builder
@@ -33,6 +25,8 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "course_id")
     private Integer courseId;
+    @Column(name = "course_image")
+    private String courseImage;
     @Column(name = "course_name",nullable = false)
     private String courseName;
     @Column(name = "course_duration")
@@ -43,11 +37,13 @@ public class Course {
     private String courseDescription;
     //TODO make it date from localDate class using value of method and convert string from json to localDate using parse method of local DAte Class in Service Pacakage or Rest Controller
     @Column(name = "start_date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date startDate;
     @Column(name = "end_date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date endDate;
 
-    @OneToOne
+    @ManyToOne(cascade ={CascadeType.MERGE,CascadeType.PERSIST})
     @JoinColumn(name = "course_type_id")
     private CourseType courseType;
 
@@ -61,7 +57,7 @@ public class Course {
     @JoinTable(name = "instructor_course", joinColumns = @JoinColumn(name = "course_id"),inverseJoinColumns = @JoinColumn(name = "instructor_id"))
     List<Instructor> instructorList =new ArrayList<>();
 
-    public Course(Integer courseId, String courseName, String courseDuration, String courseCost, String courseDescription, Date startDate, Date endDate, CourseType courseType, OnlineCourse onlineCourse, OfflineCourse offlineCourse, List<Instructor> instructorList) {
+    public Course(Integer courseId, String courseImage,String courseName, String courseDuration, String courseCost, String courseDescription, Date startDate, Date endDate, CourseType courseType, OnlineCourse onlineCourse, OfflineCourse offlineCourse, List<Instructor> instructorList) {
         this.courseId = courseId;
         this.courseName = courseName;
         this.courseDuration = courseDuration;
@@ -73,6 +69,7 @@ public class Course {
         this.onlineCourse = onlineCourse;
         this.offlineCourse = offlineCourse;
         this.instructorList = instructorList;
+        this.courseImage=courseImage;
     }
 
     public Course() {
@@ -84,6 +81,14 @@ public class Course {
 
     public void setCourseId(Integer courseId) {
         this.courseId = courseId;
+    }
+
+    public String getCourseImage() {
+        return courseImage;
+    }
+
+    public void setCourseImage(String courseImage) {
+        this.courseImage = courseImage;
     }
 
     public String getCourseName() {

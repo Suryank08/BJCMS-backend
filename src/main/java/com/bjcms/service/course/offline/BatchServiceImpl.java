@@ -28,7 +28,10 @@ public class BatchServiceImpl implements BatchService {
         }
         return batchDao.findAll();
     }
-
+    @Transactional
+    public Batch addBatch(Batch batch){
+        return batchDao.save(batch);
+    }
     @Transactional
     public Batch updateBatch(Batch batch) {
         return batchDao.save(batch);

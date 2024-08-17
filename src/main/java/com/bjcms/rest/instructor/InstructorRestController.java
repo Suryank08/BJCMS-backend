@@ -3,6 +3,7 @@ package com.bjcms.rest.instructor;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,46 +26,41 @@ public class InstructorRestController {
         this.instructorService = instructorService;
     }
 
-    @PostMapping("/bulk-create")
-    public List<Instructor> addInstructors(@RequestBody List<Instructor> instructorList) {
-        System.out.println("Added Instructor");
-        return instructorService.addInstructors(instructorList);
-    }
+
     @PostMapping("/create")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public Instructor addInstructor(@RequestBody Instructor instructor) {
         return instructorService.addInstructor(instructor);
     }
     @PostMapping("/update")
+    @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR')")
     public Instructor updateInstructor(@RequestBody Instructor instructor) {
         return instructorService.updateInstructor(instructor);
     }
 
     @GetMapping("/")
+    @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR','STUDENT','USER')")
     public List<Instructor> getAllInstructor() {
         return instructorService.getAllInstructor();
     }
 
     @GetMapping("/{instructorId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR','STUDENT','USER')")
     public Instructor getInstructor(@PathVariable int instructorId) {
         return instructorService.findInstructor(instructorId);
     }
 
     @GetMapping("/courses/{instructorId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR','STUDENT','USER')")
     public List<Course> getAllInstructorCoursesById(@PathVariable int instructorId) {
         return instructorService.getAllInstructorCoursesById(instructorId);
     }
 
 
     @DeleteMapping("/delete/{instructorId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteInstructor(@PathVariable int instructorId) {
         instructorService.deleteInstructor(instructorId);
         System.out.println("Instructor Deleted");
     }
-
-    @DeleteMapping("/delete-all")
-    public void deleteAllInstructor() {
-        instructorService.deleteAllInstructor();
-    }
-
-
 }

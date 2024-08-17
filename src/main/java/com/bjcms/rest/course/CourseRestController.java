@@ -3,6 +3,7 @@ package com.bjcms.rest.course;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +16,7 @@ import com.bjcms.entity.course.Course;
 import com.bjcms.service.course.CourseService;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api/courses")
 public class CourseRestController {
     private CourseService courseService;
 
@@ -24,27 +25,34 @@ public class CourseRestController {
         this.courseService = courseService;
     }
 
-    @GetMapping("/courses")
+    @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR','STUDENT','USER')")
+    @GetMapping("/")
     public List<Course> getAllCourse(){
         return courseService.getAllCourse();
     }
-    @GetMapping("/courses/{courseId}")
+
+    @GetMapping("/{courseId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR','STUDENT','USER')")
     public Course getCourse(@PathVariable int courseId){
         return courseService.findCourse(courseId);
     }
-    @PostMapping("/courses")
-    public List<Course> addCourse(@RequestBody List<Course> courseList){
-        System.out.println("Added Course");
-        return courseService.addCourses(courseList);
 
+    @PostMapping("/create")
+    @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR')")
+    public Course addCourse(@RequestBody Course course){
+        return courseService.addCourse(course);
     }
-    @DeleteMapping("/courses/{courseId}")
+
+    @PostMapping("/update")
+    @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR')")
+    public Course updateCourse(@RequestBody Course course){
+        return courseService.updateCourse(course);
+    }
+
+    @DeleteMapping("/delete/{courseId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteCourse(@PathVariable int courseId){
         courseService.deleteCourse(courseId);
         System.out.println("Course Deleted");
     }
-    @PostMapping("/courses/update")
-    public Course updateCourse(@RequestBody Course course){
-        return courseService.updateCourse(course);
-    }
-}
+   }

@@ -1,12 +1,6 @@
 package com.bjcms.entity.course;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "course_type")
@@ -16,16 +10,16 @@ public class CourseType {
     @Column(name = "course_type_id")
     private Integer courseTypeId;
 
-    @Column(name = "course_type_name")
+    @Column(name = "course_type_name",nullable = false)
     private String courseTypeName;
 
-    @OneToOne(mappedBy = "courseType")
-    private Course course;
+//    @OneToMany(mappedBy = "courseType")
+//    private Course course;
 
-    public CourseType(Integer courseTypeId, String courseTypeName, Course course) {
+    public CourseType(Integer courseTypeId, String courseTypeName) {
         this.courseTypeId = courseTypeId;
         this.courseTypeName = courseTypeName;
-        this.course = course;
+//        this.course = course;
     }
 
     public CourseType() {
@@ -46,12 +40,12 @@ public class CourseType {
     public void setCourseTypeName(String courseTypeName) {
         this.courseTypeName = courseTypeName;
     }
-
-    public Course getCourse() {
-        return course;
-    }
-
-    public void setCourse(Course course) {
-        this.course = course;
-    }
+//
+//    public Course getCourse() {
+//        return course;
+//    }
+//
+//    public void setCourse(Course course) {
+//        this.course = course;
+//    }
 }

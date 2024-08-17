@@ -6,6 +6,7 @@ import com.bjcms.entity.course.offline.Batch;
 
 public interface BatchService {
     public List<Batch> addBatch(List<Batch> batchList);
+    public Batch addBatch(Batch batch);
 
     public void deleteBatch(int id);
 
@@ -14,5 +15,5 @@ public interface BatchService {
     public Batch findBatch(int id);
 
     public List<Batch> getAllBatch();
-    ////hsdfhdhsfhjid
+
 }

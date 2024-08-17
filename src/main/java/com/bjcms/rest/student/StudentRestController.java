@@ -3,6 +3,7 @@ package com.bjcms.rest.student;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,7 +17,7 @@ import com.bjcms.entity.student.Student;
 import com.bjcms.service.student.StudentService;
 
 @RestController
-@RequestMapping("/")
+@RequestMapping("/api/students")
 public class StudentRestController {
   private StudentService studentService;
 
@@ -25,26 +26,32 @@ public class StudentRestController {
         this.studentService = studentService;
     }
 
-    @GetMapping("/students")
+    @GetMapping("/")
+    @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR')")
     public List<Student> getAllStudent(){
         return studentService.getAllStudent();
     }
-    @GetMapping("/students/{studentId}")
+
+    @GetMapping("/{studentId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN' ,'INSTRUCTOR','STUDENT')")
     public Student getStudent(@PathVariable int studentId){
         return studentService.findStudent(studentId);
     }
-    @PostMapping("/students")
+
+    @PostMapping("/create")
     public List<Student> addStudent(@RequestBody List<Student> studentList){
         System.out.println("Added Student");
         return studentService.addStudent(studentList);
 
     }
-    @DeleteMapping("/students/{studentId}")
+    @DeleteMapping("/{studentId}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteStudent(@PathVariable int studentId){
          studentService.deleteStudent(studentId);
         System.out.println("Student Deleted");
     }
-    @PutMapping("/students")
+    @PostMapping("/update")
+    @PreAuthorize("hasAnyAuthority('ADMIN' ,'INSTRUCTOR','STUDENT')")
     public Student updateStudent(@RequestBody Student student){
        return studentService.updateStudent(student);
     }
