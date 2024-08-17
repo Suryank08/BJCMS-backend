@@ -43,6 +43,13 @@ public class CourseRestController {
         return courseService.addCourse(course);
     }
 
+    //TODO Protect this method
+    @PostMapping("/enrollStudent")
+    public Course enrollStudentInCourse(@RequestBody Integer courseId,@RequestBody String email){
+      return courseService.enrollStudentInCourse(courseId,email);
+    }
+
+
     @PostMapping("/update")
     @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR')")
     public Course updateCourse(@RequestBody Course course){

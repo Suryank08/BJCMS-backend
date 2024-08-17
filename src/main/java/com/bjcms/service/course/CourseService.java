@@ -18,4 +18,5 @@ public interface CourseService {
 
     public List<Course> getAllCourse();
     public Optional<Course> findByCourseId(Integer id);
+    public Course enrollStudentInCourse(Integer courseId,String email);
 }
