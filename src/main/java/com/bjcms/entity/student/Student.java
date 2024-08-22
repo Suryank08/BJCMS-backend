@@ -7,6 +7,8 @@ import com.bjcms.entity.course.offline.Batch;
 import com.bjcms.entity.course.online.Comment;
 import com.bjcms.entity.course.online.OnlineCourse;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -20,6 +22,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "student")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "studentId")
 public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +38,7 @@ public class Student {
     private String mobileNumber;
 
     @ManyToMany
-    @JoinTable(name = "online_course_student_enrollment", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "course_id"))
+    @JoinTable(name = "online_course_student_enrollment", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "online_course_id"))
     private List<OnlineCourse> onlineCourseList = new ArrayList<>();
 
     @OneToMany(mappedBy = "student")

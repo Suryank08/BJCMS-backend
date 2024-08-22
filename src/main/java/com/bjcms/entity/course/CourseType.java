@@ -2,6 +2,8 @@ package com.bjcms.entity.course;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "course_type")
 public class CourseType {
@@ -12,14 +14,14 @@ public class CourseType {
 
     @Column(name = "course_type_name",nullable = false)
     private String courseTypeName;
-
+//
 //    @OneToMany(mappedBy = "courseType")
-//    private Course course;
+//    private List<Course> courseList;
 
     public CourseType(Integer courseTypeId, String courseTypeName) {
         this.courseTypeId = courseTypeId;
         this.courseTypeName = courseTypeName;
-//        this.course = course;
+//        this.courseList = courseList;
     }
 
     public CourseType() {
@@ -40,12 +42,12 @@ public class CourseType {
     public void setCourseTypeName(String courseTypeName) {
         this.courseTypeName = courseTypeName;
     }
-//
-//    public Course getCourse() {
-//        return course;
+
+//    public List<Course> getCourseList() {
+//        return courseList;
 //    }
 //
-//    public void setCourse(Course course) {
-//        this.course = course;
+//    public void setCourseList(List<Course> courseList) {
+//        this.courseList = courseList;
 //    }
 }

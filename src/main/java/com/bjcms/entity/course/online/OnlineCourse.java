@@ -8,26 +8,19 @@ import com.bjcms.entity.course.Course;
 import com.bjcms.entity.course.Subject;
 import com.bjcms.entity.student.Student;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "online_course")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "onlineCourseId")
 public class OnlineCourse {
 
     @Id
-    @Column(name = "course_id")
-    private Integer courseId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "online_course_id")
+    private Integer onlineCourseId;
 
     @Column(name = "status", length = 20)
     private String status = "upcoming";
@@ -39,16 +32,15 @@ public class OnlineCourse {
     private LocalDateTime updatedAt;
 
     @OneToOne
-    @MapsId
     @JoinColumn(name = "course_id")
     private Course course;
 
     @ManyToMany
-    @JoinTable(name = "online_course_subject",joinColumns = @JoinColumn(name = "course_id"),inverseJoinColumns = @JoinColumn(name="subject_id"))
+    @JoinTable(name = "online_course_subject",joinColumns = @JoinColumn(name = "online_course_id"),inverseJoinColumns = @JoinColumn(name="subject_id"))
     List<Subject>subjectList=new ArrayList<>();
 
     @ManyToMany
-    @JoinTable(name = "online_course_student_enrollment",joinColumns = @JoinColumn(name = "course_id"),inverseJoinColumns = @JoinColumn(name="student_id"))
+    @JoinTable(name = "online_course_student_enrollment",joinColumns = @JoinColumn(name = "online_course_id"),inverseJoinColumns = @JoinColumn(name="student_id"))
     List<Student>studentList=new ArrayList<>();
 
     @OneToMany(mappedBy = "onlineCourse")
@@ -65,8 +57,8 @@ public class OnlineCourse {
         updatedAt = LocalDateTime.now();
     }
 
-    public OnlineCourse(Integer courseId, String status, LocalDateTime createdAt, LocalDateTime updatedAt, Course course, List<Subject> subjectList, List<Student> studentList, List<Video> videoList) {
-        this.courseId = courseId;
+    public OnlineCourse(Integer onlineCourseId, String status, LocalDateTime createdAt, LocalDateTime updatedAt, Course course, List<Subject> subjectList, List<Student> studentList, List<Video> videoList) {
+        this.onlineCourseId = onlineCourseId;
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -79,12 +71,12 @@ public class OnlineCourse {
     public OnlineCourse() {
     }
 
-    public Integer getCourseId() {
-        return courseId;
+    public Integer getOnlineCourseId() {
+        return onlineCourseId;
     }
 
-    public void setCourseId(Integer courseId) {
-        this.courseId = courseId;
+    public void setOnlineCourseId(Integer courseId) {
+        this.onlineCourseId = courseId;
     }
 
     public String getStatus() {
@@ -141,6 +133,20 @@ public class OnlineCourse {
 
     public void setVideoList(List<Video> videoList) {
         this.videoList = videoList;
+    }
+
+    @Override
+    public String toString() {
+        return "OnlineCourse{" +
+                "OnlineCourseId=" + onlineCourseId +
+                ", status='" + status + '\'' +
+                ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
+                ", course=" + course +
+                ", subjectList=" + subjectList +
+                ", studentList=" + studentList +
+                ", videoList=" + videoList +
+                '}';
     }
 }
 

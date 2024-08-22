@@ -33,17 +33,14 @@ public class Video {
     private Integer likes;
 
     @ManyToOne
-    @JoinColumn(name = "course_id")
-
+    @JoinColumn(name = "online_course_id")
     private OnlineCourse onlineCourse;
 
     @ManyToOne
     @JoinColumn(name = "subject_id")
-
     private Subject subject;
 
     @OneToMany(mappedBy ="video")
-
     private List<Comment> commentList=new ArrayList<>();
 
     public Video(Integer videoId, String videoUrl, Integer likes, OnlineCourse onlineCourse, Subject subject, List<Comment> commentList) {

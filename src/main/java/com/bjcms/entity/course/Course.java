@@ -170,4 +170,22 @@ public class Course {
     public void setInstructorList(List<Instructor> instructorList) {
         this.instructorList = instructorList;
     }
+
+    @Override
+    public String toString() {
+        return "Course{" +
+                "courseId=" + courseId +
+                ", courseImage='" + courseImage + '\'' +
+                ", courseName='" + courseName + '\'' +
+                ", courseDuration='" + courseDuration + '\'' +
+                ", courseCost='" + courseCost + '\'' +
+                ", courseDescription='" + courseDescription + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", courseType=" + courseType +
+                ", onlineCourse=" + onlineCourse +
+                ", offlineCourse=" + offlineCourse +
+                ", instructorList=" + instructorList +
+                '}';
+    }
 }

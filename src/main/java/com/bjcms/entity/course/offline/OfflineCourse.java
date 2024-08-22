@@ -29,7 +29,7 @@ public class OfflineCourse {
     private Integer courseId;
 
     @Column(name = "status", length = 20)
-    private String status = "upcoming";
+    private String status = null;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

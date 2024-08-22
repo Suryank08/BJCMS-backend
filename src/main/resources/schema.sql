@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS public.course
     course_description text COLLATE pg_catalog."default",
     start_date date,
     end_date date,
+    course_image character varying(1000) COLLATE pg_catalog."default",
     CONSTRAINT course_pkey PRIMARY KEY (course_id)
 );
 
@@ -144,35 +145,46 @@ CREATE TABLE IF NOT EXISTS public.offline_course_subject
 
 CREATE TABLE IF NOT EXISTS public.online_course
 (
+    online_course_id serial NOT NULL,
     course_id integer NOT NULL,
     status character varying(20) COLLATE pg_catalog."default" DEFAULT 'upcoming'::character varying,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT online_course_pkey PRIMARY KEY (course_id)
+    CONSTRAINT online_course_id_pkey PRIMARY KEY (online_course_id)
 );
 
 CREATE TABLE IF NOT EXISTS public.online_course_attendence_record
 (
     attendence_id serial NOT NULL,
-    course_id integer NOT NULL,
+    online_course_id integer NOT NULL,
     subject_id integer NOT NULL,
     student_id integer NOT NULL,
     attendence_count integer,
     CONSTRAINT online_course_attendence_record_pkey PRIMARY KEY (attendence_id)
 );
 
-CREATE TABLE IF NOT EXISTS public.online_course_student_enrollment
+CREATE TABLE IF NOT EXISTS public.online_course_old
 (
     course_id integer NOT NULL,
+    status character varying(20) COLLATE pg_catalog."default" DEFAULT 'upcoming'::character varying,
+    created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
+    online_course_id integer NOT NULL DEFAULT nextval('online_course_online_course_id_seq'::regclass),
+    CONSTRAINT online_course_pkey PRIMARY KEY (course_id)
+);
+
+CREATE TABLE IF NOT EXISTS public.online_course_student_enrollment
+(
+    online_course_id integer NOT NULL,
     student_id integer NOT NULL,
-    CONSTRAINT course_student_enrollment_pkey PRIMARY KEY (course_id, student_id)
+    CONSTRAINT course_student_enrollment_pkey PRIMARY KEY (online_course_id, student_id)
 );
 
 CREATE TABLE IF NOT EXISTS public.online_course_subject
 (
-    course_id integer NOT NULL,
+    online_course_id integer NOT NULL,
     subject_id integer NOT NULL,
-    CONSTRAINT subject_online_course_pkey PRIMARY KEY (course_id, subject_id)
+    CONSTRAINT subject_online_course_pkey PRIMARY KEY (online_course_id, subject_id)
 );
 
 CREATE TABLE IF NOT EXISTS public.qualification
@@ -182,11 +194,18 @@ CREATE TABLE IF NOT EXISTS public.qualification
     CONSTRAINT qualification_pkey PRIMARY KEY (qualification_id)
 );
 
+CREATE TABLE IF NOT EXISTS public.role
+(
+    role_id serial NOT NULL,
+    role_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT role_pkey PRIMARY KEY (role_id)
+);
+
 CREATE TABLE IF NOT EXISTS public.student
 (
     student_id serial NOT NULL,
-    first_name character varying(250) COLLATE pg_catalog."default" NOT NULL,
-    last_name character varying(250) COLLATE pg_catalog."default" NOT NULL,
+    first_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    last_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
     email character varying(250) COLLATE pg_catalog."default" NOT NULL,
     mobile_number character varying(12) COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT student_pkey PRIMARY KEY (student_id),
@@ -200,21 +219,31 @@ CREATE TABLE IF NOT EXISTS public.subject
     CONSTRAINT subject_pkey PRIMARY KEY (subject_id)
 );
 
-CREATE TABLE IF NOT EXISTS public."user"
+CREATE TABLE IF NOT EXISTS public.users
 (
-    id serial NOT NULL,
-    first_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
-    last_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
-    mobile_number character varying(12) COLLATE pg_catalog."default" NOT NULL,
-    email character varying(50) COLLATE pg_catalog."default" NOT NULL,
-    password character varying(50) COLLATE pg_catalog."default",
-    CONSTRAINT student_details_pkey PRIMARY KEY (id)
+    user_id integer NOT NULL DEFAULT nextval('user_user_id_seq'::regclass),
+    first_name character varying(50) COLLATE pg_catalog."default",
+    last_name character varying(50) COLLATE pg_catalog."default",
+    email character varying(250) COLLATE pg_catalog."default",
+    mobile_number character varying(12) COLLATE pg_catalog."default",
+    password character varying(250) COLLATE pg_catalog."default",
+    created_at date,
+    updated_at date,
+    CONSTRAINT user_pkey PRIMARY KEY (user_id),
+    CONSTRAINT user_email_key UNIQUE (email)
+);
+
+CREATE TABLE IF NOT EXISTS public.users_role
+(
+    user_id integer NOT NULL,
+    role_id integer NOT NULL,
+    CONSTRAINT users_role_pkey PRIMARY KEY (user_id, role_id)
 );
 
 CREATE TABLE IF NOT EXISTS public.video
 (
     video_id serial NOT NULL,
-    course_id integer,
+    online_course_id integer,
     subject_id integer,
     video_url character varying(255) COLLATE pg_catalog."default",
     likes integer,
@@ -384,27 +413,34 @@ ALTER TABLE IF EXISTS public.online_course
     REFERENCES public.course (course_id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public.online_course_attendence_record
+    ADD CONSTRAINT online_course_attendence_record_online_course_id_subject_fkey FOREIGN KEY (online_course_id, subject_id)
+    REFERENCES public.online_course_subject (online_course_id, subject_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public.online_course_attendence_record
+    ADD CONSTRAINT online_course_attendence_record_student_enrollment_fkey FOREIGN KEY (online_course_id, student_id)
+    REFERENCES public.online_course_student_enrollment (online_course_id, student_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public.online_course_old
+    ADD CONSTRAINT online_course_course_id_fkey FOREIGN KEY (course_id)
+    REFERENCES public.course (course_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
 CREATE INDEX IF NOT EXISTS online_course_pkey
-    ON public.online_course(course_id);
-
-
-ALTER TABLE IF EXISTS public.online_course_attendence_record
-    ADD CONSTRAINT online_course_attendence_record_course_id_subject_id_fkey FOREIGN KEY (course_id, subject_id)
-    REFERENCES public.online_course_subject (course_id, subject_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION;
-
-
-ALTER TABLE IF EXISTS public.online_course_attendence_record
-    ADD CONSTRAINT online_course_attendence_record_student_enrollment_fkey FOREIGN KEY (course_id, student_id)
-    REFERENCES public.online_course_student_enrollment (course_id, student_id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION;
+    ON public.online_course_old(course_id);
 
 
 ALTER TABLE IF EXISTS public.online_course_student_enrollment
-    ADD CONSTRAINT course_student_enrollment_course_id_fkey FOREIGN KEY (course_id)
-    REFERENCES public.online_course (course_id) MATCH SIMPLE
+    ADD CONSTRAINT course_student_enrollment_course_id_fkey FOREIGN KEY (online_course_id)
+    REFERENCES public.online_course (online_course_id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
 
@@ -417,8 +453,8 @@ ALTER TABLE IF EXISTS public.online_course_student_enrollment
 
 
 ALTER TABLE IF EXISTS public.online_course_subject
-    ADD CONSTRAINT course_id_fk FOREIGN KEY (course_id)
-    REFERENCES public.online_course (course_id) MATCH SIMPLE
+    ADD CONSTRAINT online_course_id_fk FOREIGN KEY (online_course_id)
+    REFERENCES public.online_course (online_course_id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
 
@@ -430,9 +466,23 @@ ALTER TABLE IF EXISTS public.online_course_subject
     ON DELETE NO ACTION;
 
 
+ALTER TABLE IF EXISTS public.users_role
+    ADD CONSTRAINT role_id_fk FOREIGN KEY (role_id)
+    REFERENCES public.role (role_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public.users_role
+    ADD CONSTRAINT user_id_fk FOREIGN KEY (user_id)
+    REFERENCES public.users (user_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
 ALTER TABLE IF EXISTS public.video
-    ADD CONSTRAINT video_course_id_fkey FOREIGN KEY (course_id)
-    REFERENCES public.online_course (course_id) MATCH SIMPLE
+    ADD CONSTRAINT video_course_id_fkey FOREIGN KEY (online_course_id)
+    REFERENCES public.online_course (online_course_id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
 

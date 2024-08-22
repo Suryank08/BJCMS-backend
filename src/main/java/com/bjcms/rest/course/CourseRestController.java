@@ -38,14 +38,16 @@ public class CourseRestController {
     }
 
     @PostMapping("/create")
-    @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR')")
+   @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR')")
     public Course addCourse(@RequestBody Course course){
+        System.out.println("conntroller metholdsdjcbj");
         return courseService.addCourse(course);
     }
 
     //TODO Protect this method
     @PostMapping("/enrollStudent")
     public Course enrollStudentInCourse(@RequestBody Integer courseId,@RequestBody String email){
+        System.out.println("conntroller metholdsdjcbj");
       return courseService.enrollStudentInCourse(courseId,email);
     }
 

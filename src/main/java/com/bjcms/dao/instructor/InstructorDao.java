@@ -7,4 +7,5 @@ import com.bjcms.entity.instructor.Instructor;
 
 @Repository
 public interface InstructorDao extends JpaRepository<Instructor,Integer> {
+
 }

@@ -39,7 +39,7 @@ public class Subject {
     private List<Instructor>instructorList=new ArrayList<>();
 
     @ManyToMany(cascade ={CascadeType.PERSIST,CascadeType.MERGE},fetch = FetchType.LAZY)
-    @JoinTable(name="online_course_subject",joinColumns = @JoinColumn(name = "subject_id"),inverseJoinColumns = @JoinColumn(name = "course_id"))
+    @JoinTable(name="online_course_subject",joinColumns = @JoinColumn(name = "subject_id"),inverseJoinColumns = @JoinColumn(name = "online_course_id"))
     private List<OnlineCourse> onlineCourseList=new ArrayList<>();
 
     @ManyToMany(cascade ={CascadeType.PERSIST,CascadeType.MERGE},fetch = FetchType.LAZY)
