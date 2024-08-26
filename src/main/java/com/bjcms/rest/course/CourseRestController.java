@@ -1,7 +1,9 @@
 package com.bjcms.rest.course;
 
+import java.security.Principal;
 import java.util.List;
 
+import com.bjcms.responses.EnrollmentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,10 +33,27 @@ public class CourseRestController {
         return courseService.getAllCourse();
     }
 
+
     @GetMapping("/{courseId}")
     @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR','STUDENT','USER')")
     public Course getCourse(@PathVariable int courseId){
         return courseService.findCourse(courseId);
+    }
+
+    @GetMapping("/enrolledCourses")
+    @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR','STUDENT')")
+    public  List<Course> enrolledCourse(Principal principal){
+        System.out.println("conntroller enrolled Courses");
+        String userName=principal.getName();
+        return courseService.enrolledCourses(userName);
+    }
+
+    @GetMapping("/instructorCourses")
+    @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR')")
+    public  List<Course> instructorCourse(Principal principal){
+        System.out.println("conntroller get Instructor Courses");
+        String userName=principal.getName();
+        return courseService.instructorCourses(userName);
     }
 
     @PostMapping("/create")
@@ -46,9 +65,12 @@ public class CourseRestController {
 
     //TODO Protect this method
     @PostMapping("/enrollStudent")
-    public Course enrollStudentInCourse(@RequestBody Integer courseId,@RequestBody String email){
+    public Course enrollStudentInCourse(@RequestBody EnrollmentRequest enrollmentData ){
         System.out.println("conntroller metholdsdjcbj");
-      return courseService.enrollStudentInCourse(courseId,email);
+        Integer courseId = enrollmentData.getCourseId();
+        String email= enrollmentData.getEmail();
+        Integer batchId=enrollmentData.getBatchId();
+        return courseService.enrollStudentInCourse(courseId,email,batchId);
     }
 
 

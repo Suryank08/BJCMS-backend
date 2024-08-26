@@ -1,7 +1,10 @@
 package com.bjcms.rest.student;
 
+import java.security.Principal;
 import java.util.List;
 
+import com.bjcms.entity.course.Course;
+import com.bjcms.responses.EnrollmentRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -37,6 +40,7 @@ public class StudentRestController {
     public Student getStudent(@PathVariable int studentId){
         return studentService.findStudent(studentId);
     }
+
 
     @PostMapping("/create")
     public List<Student> addStudent(@RequestBody List<Student> studentList){

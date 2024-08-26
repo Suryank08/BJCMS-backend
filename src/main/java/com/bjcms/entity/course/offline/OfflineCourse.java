@@ -7,21 +7,13 @@ import java.util.List;
 import com.bjcms.entity.course.Course;
 import com.bjcms.entity.course.Subject;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "offline_course")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "courseId")
 public class OfflineCourse {
 
     @Id
@@ -42,7 +34,7 @@ public class OfflineCourse {
     @JoinColumn(name = "course_id")
     private Course course;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "offline_course_subject",joinColumns = @JoinColumn(name = "course_id"),inverseJoinColumns = @JoinColumn(name="subject_id"))
     private List<Subject> subjectList=new ArrayList<>();
 

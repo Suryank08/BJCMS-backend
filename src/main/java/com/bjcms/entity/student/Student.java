@@ -7,18 +7,10 @@ import com.bjcms.entity.course.offline.Batch;
 import com.bjcms.entity.course.online.Comment;
 import com.bjcms.entity.course.online.OnlineCourse;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "student")
@@ -37,14 +29,15 @@ public class Student {
     @Column(name = "mobile_number")
     private String mobileNumber;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "online_course_student_enrollment", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "online_course_id"))
     private List<OnlineCourse> onlineCourseList = new ArrayList<>();
 
     @OneToMany(mappedBy = "student")
     List<Comment> commentList = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JsonBackReference
     @JoinTable(name = "batch_student_enrollment", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "batch_id"))
     List<Batch> batchList = new ArrayList<>();
 

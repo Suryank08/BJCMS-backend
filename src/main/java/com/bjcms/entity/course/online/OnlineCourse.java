@@ -35,11 +35,11 @@ public class OnlineCourse {
     @JoinColumn(name = "course_id")
     private Course course;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "online_course_subject",joinColumns = @JoinColumn(name = "online_course_id"),inverseJoinColumns = @JoinColumn(name="subject_id"))
     List<Subject>subjectList=new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "online_course_student_enrollment",joinColumns = @JoinColumn(name = "online_course_id"),inverseJoinColumns = @JoinColumn(name="student_id"))
     List<Student>studentList=new ArrayList<>();
 

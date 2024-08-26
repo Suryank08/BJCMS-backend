@@ -32,6 +32,8 @@ public class Instructor {
     private Integer instructorId;
     @Column(name = "instructor_name")
     private String instructorName;
+    @Column(name = "email")
+    private String email;
 
     @OneToOne(mappedBy = "instructor",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonManagedReference
@@ -49,13 +51,14 @@ public class Instructor {
     @JoinTable(name = "instructor_course",joinColumns = @JoinColumn(name = "instructor_id"),inverseJoinColumns = @JoinColumn(name = "course_id"))
     private List<Course> courseList=new ArrayList<>();
 
-    public Instructor(Integer instructorId, String instructorName, InstructorInfo instructorInfo, List<Qualification> qualificationList, List<Subject> subjectList, List<Course> courseList) {
+    public Instructor(Integer instructorId, String email,String instructorName, InstructorInfo instructorInfo, List<Qualification> qualificationList, List<Subject> subjectList, List<Course> courseList) {
         this.instructorId = instructorId;
         this.instructorName = instructorName;
         this.instructorInfo = instructorInfo;
         this.qualificationList = qualificationList;
         this.subjectList = subjectList;
         this.courseList = courseList;
+        this.email=email;
     }
 
     public Instructor() {
@@ -109,4 +112,11 @@ public class Instructor {
         this.courseList = courseList;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

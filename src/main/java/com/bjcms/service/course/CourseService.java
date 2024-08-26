@@ -18,5 +18,7 @@ public interface CourseService {
 
     public List<Course> getAllCourse();
     public Optional<Course> findByCourseId(Integer id);
-    public Course enrollStudentInCourse(Integer courseId,String email);
+    public Course enrollStudentInCourse(Integer courseId, String email, Integer batchId);
+    public List<Course>enrolledCourses(String userName);
+    public List<Course>instructorCourses(String userName);
 }

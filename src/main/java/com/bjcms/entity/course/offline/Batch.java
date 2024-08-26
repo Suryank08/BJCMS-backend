@@ -5,19 +5,14 @@ import java.util.List;
 
 import com.bjcms.entity.student.Student;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "batch")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "batchId")
 public class Batch {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +27,7 @@ public class Batch {
     @JoinColumn(name = "course_id")
     private OfflineCourse offlineCourse;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "batch_student_enrollment",joinColumns = @JoinColumn(name = "batch_id"),inverseJoinColumns = @JoinColumn(name = "student_id"))
     private List<Student>studentList=new ArrayList<>();
 
