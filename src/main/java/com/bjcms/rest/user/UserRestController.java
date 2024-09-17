@@ -31,6 +31,7 @@ public class UserRestController {
     @PostMapping("/register")
     public ResponseEntity<User> addUser(@RequestBody User user) {
        Set<Role> roles= user.getRoles();
+        System.out.println(user.toString());
         for(Role role :roles){
             System.out.println(role.getRoleName());
         }

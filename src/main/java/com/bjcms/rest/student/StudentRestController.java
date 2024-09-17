@@ -46,8 +46,13 @@ public class StudentRestController {
     public List<Student> addStudent(@RequestBody List<Student> studentList){
         System.out.println("Added Student");
         return studentService.addStudent(studentList);
-
     }
+
+    @PostMapping("/courseEnrolledStudent")
+    public List<Student> courseEnrolledStudent(@RequestBody Integer courseId){
+        return studentService.courseEnrolledStudent(courseId);
+    }
+
     @DeleteMapping("/{studentId}")
     @PreAuthorize("hasAuthority('ADMIN')")
     public void deleteStudent(@PathVariable int studentId){

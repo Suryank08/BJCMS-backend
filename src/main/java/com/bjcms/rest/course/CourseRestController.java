@@ -58,9 +58,9 @@ public class CourseRestController {
 
     @PostMapping("/create")
    @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR')")
-    public Course addCourse(@RequestBody Course course){
-        System.out.println("conntroller metholdsdjcbj");
-        return courseService.addCourse(course);
+    public Course addCourse(@RequestBody Course course,Principal principal){
+        String email =principal.getName();
+        return courseService.addCourse(course,email);
     }
 
     //TODO Protect this method

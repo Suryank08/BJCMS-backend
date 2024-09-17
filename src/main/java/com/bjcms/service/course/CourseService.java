@@ -9,7 +9,7 @@ import com.bjcms.entity.course.Course;
 
 public interface CourseService {
     public List<Course> addCourses(List<Course> courseList);
-    public Course addCourse(Course course);
+    public Course addCourse(Course course,String email);
     public void deleteCourse(int id);
 
     public Course updateCourse(Course course);

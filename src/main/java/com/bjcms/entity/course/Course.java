@@ -7,9 +7,7 @@ import java.util.List;
 import com.bjcms.entity.course.offline.OfflineCourse;
 import com.bjcms.entity.course.online.OnlineCourse;
 import com.bjcms.entity.instructor.Instructor;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.*;
 
 import jakarta.persistence.*;
 
@@ -47,13 +45,14 @@ public class Course {
     @JoinColumn(name = "course_type_id")
     private CourseType courseType;
 
-    @OneToOne(mappedBy = "course")
+    @OneToOne(mappedBy = "course",fetch = FetchType.EAGER)
     private OnlineCourse onlineCourse;
 
-    @OneToOne(mappedBy = "course")
+    @OneToOne(mappedBy = "course",fetch = FetchType.EAGER)
     private OfflineCourse offlineCourse;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JsonManagedReference
     @JoinTable(name = "instructor_course", joinColumns = @JoinColumn(name = "course_id"),inverseJoinColumns = @JoinColumn(name = "instructor_id"))
     List<Instructor> instructorList =new ArrayList<>();
 

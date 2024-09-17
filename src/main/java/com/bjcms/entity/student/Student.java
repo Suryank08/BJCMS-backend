@@ -30,6 +30,7 @@ public class Student {
     private String mobileNumber;
 
     @ManyToMany(fetch = FetchType.LAZY)
+    @JsonBackReference
     @JoinTable(name = "online_course_student_enrollment", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "online_course_id"))
     private List<OnlineCourse> onlineCourseList = new ArrayList<>();
 

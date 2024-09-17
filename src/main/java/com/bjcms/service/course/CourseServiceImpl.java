@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -61,7 +62,7 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Transactional
-    public Course addCourse(Course course) {
+    public Course addCourse(Course course, String email) {
         System.out.println("Starting addCourse method" + course);
 
         // Handling CourseType
@@ -131,6 +132,7 @@ public class CourseServiceImpl implements CourseService {
             savedCourse.setOnlineCourse(onlineCourse);
 
         }
+        //TODO later upgrade instructor functionality to add multiple instructors for time being i am setting Course  instructorList to instructor who has currently logged in
         List<Instructor> instructorList = course.getInstructorList();
         if (instructorList != null && !instructorList.isEmpty()) {
             System.out.println("inside Instructor");
@@ -139,7 +141,14 @@ public class CourseServiceImpl implements CourseService {
 //                instructor.getCourseList().add(savedCourse);
 //            }
 //        }
-            List<Instructor> instructors = instructorDao.saveAll(instructorList);
+            Optional<Instructor> optionalInstructor = instructorDao.findByEmail(email);
+            List<Instructor> instructors =new ArrayList<>();
+            if(optionalInstructor.isPresent()) {
+                instructors.add(optionalInstructor.get());
+            }
+            else{
+                instructors= instructorDao.saveAll(instructorList);
+            }
             savedCourse.setInstructorList(instructors);
         }
 

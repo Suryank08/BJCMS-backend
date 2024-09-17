@@ -9,6 +9,7 @@ import com.bjcms.entity.course.Subject;
 import com.bjcms.entity.student.Student;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
@@ -40,6 +41,7 @@ public class OnlineCourse {
     List<Subject>subjectList=new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
+    @JsonManagedReference
     @JoinTable(name = "online_course_student_enrollment",joinColumns = @JoinColumn(name = "online_course_id"),inverseJoinColumns = @JoinColumn(name="student_id"))
     List<Student>studentList=new ArrayList<>();
 

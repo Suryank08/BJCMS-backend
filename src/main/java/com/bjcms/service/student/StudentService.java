@@ -16,5 +16,6 @@ public interface StudentService {
     public Student findStudent(int id);
 
     public List<Student> getAllStudent();
+    public List<Student> courseEnrolledStudent(Integer courseId);
 
 }

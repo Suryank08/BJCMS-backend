@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.bjcms.entity.course.Course;
 import com.bjcms.entity.course.Subject;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -48,6 +49,7 @@ public class Instructor {
    private List<Subject> subjectList=new ArrayList<>();
 
     @ManyToMany(cascade ={CascadeType.PERSIST,CascadeType.MERGE},fetch = FetchType.LAZY)
+    @JsonBackReference
     @JoinTable(name = "instructor_course",joinColumns = @JoinColumn(name = "instructor_id"),inverseJoinColumns = @JoinColumn(name = "course_id"))
     private List<Course> courseList=new ArrayList<>();
 
