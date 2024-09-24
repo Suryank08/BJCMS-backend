@@ -46,7 +46,6 @@ public class InstructorServiceImpl implements InstructorService {
 
     @Transactional
     public List<Instructor> addInstructors(List<Instructor> instructorList) {
-        System.out.println("Saving Instructor: " + instructorList.toString());
         for (Instructor instructor : instructorList) {
             InstructorInfo instructorInfo = instructor.getInstructorInfo();
             List<Course> courseList = instructor.getCourseList();

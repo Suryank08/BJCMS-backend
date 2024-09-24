@@ -1,10 +1,16 @@
 package com.bjcms.rest.course;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
+import com.bjcms.dto.course.CourseUtil;
+import com.bjcms.dto.course.UserCoursesDto;
 import com.bjcms.responses.EnrollmentRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +26,7 @@ import com.bjcms.service.course.CourseService;
 @RestController
 @RequestMapping("/api/courses")
 public class CourseRestController {
+    private static final Logger log = LoggerFactory.getLogger(CourseRestController.class);
     private CourseService courseService;
 
     @Autowired
@@ -29,8 +36,14 @@ public class CourseRestController {
 
     @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR','STUDENT','USER')")
     @GetMapping("/")
-    public List<Course> getAllCourse(){
-        return courseService.getAllCourse();
+    public ResponseEntity<List<UserCoursesDto>> getAllCourse(){
+        List<Course> courseList = courseService.getAllCourse();
+        List<UserCoursesDto> userCoursesDtoList = CourseUtil.parseCourseData(courseList);
+             if(!userCoursesDtoList.isEmpty()) {
+                 System.out.println("check This :" + userCoursesDtoList);
+             }
+       return ResponseEntity.ok(userCoursesDtoList);
+// return courseService.getAllCourse();
     }
 
 

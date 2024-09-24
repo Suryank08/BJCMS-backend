@@ -11,6 +11,7 @@ import com.bjcms.dao.instructor.InstructorDao;
 import com.bjcms.dao.student.StudentDao;
 import com.bjcms.dao.user.RoleDao;
 import com.bjcms.dao.user.UserDao;
+import com.bjcms.dto.course.*;
 import com.bjcms.entity.course.Course;
 import com.bjcms.entity.course.CourseType;
 import com.bjcms.entity.course.Subject;
@@ -31,6 +32,7 @@ import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CourseServiceImpl implements CourseService {

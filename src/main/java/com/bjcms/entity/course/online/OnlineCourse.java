@@ -137,18 +137,5 @@ public class OnlineCourse {
         this.videoList = videoList;
     }
 
-    @Override
-    public String toString() {
-        return "OnlineCourse{" +
-                "OnlineCourseId=" + onlineCourseId +
-                ", status='" + status + '\'' +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", course=" + course +
-                ", subjectList=" + subjectList +
-                ", studentList=" + studentList +
-                ", videoList=" + videoList +
-                '}';
-    }
 }
 
