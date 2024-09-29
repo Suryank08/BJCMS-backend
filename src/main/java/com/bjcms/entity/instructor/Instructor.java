@@ -3,6 +3,7 @@ package com.bjcms.entity.instructor;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bjcms.entity.coaching.Coaching;
 import com.bjcms.entity.course.Course;
 import com.bjcms.entity.course.Subject;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -53,14 +54,19 @@ public class Instructor {
     @JoinTable(name = "instructor_course",joinColumns = @JoinColumn(name = "instructor_id"),inverseJoinColumns = @JoinColumn(name = "course_id"))
     private List<Course> courseList=new ArrayList<>();
 
-    public Instructor(Integer instructorId, String email,String instructorName, InstructorInfo instructorInfo, List<Qualification> qualificationList, List<Subject> subjectList, List<Course> courseList) {
+    @ManyToMany(cascade ={CascadeType.PERSIST,CascadeType.MERGE},fetch = FetchType.LAZY)
+    @JoinTable(name = "coaching_instructor",joinColumns = @JoinColumn(name = "instructor_id"),inverseJoinColumns = @JoinColumn(name = "coaching_id"))
+    private List<Coaching> coachingList=new ArrayList<>();
+
+    public Instructor(Integer instructorId, String instructorName, String email, InstructorInfo instructorInfo, List<Qualification> qualificationList, List<Subject> subjectList, List<Course> courseList, List<Coaching> coachingList) {
         this.instructorId = instructorId;
         this.instructorName = instructorName;
+        this.email = email;
         this.instructorInfo = instructorInfo;
         this.qualificationList = qualificationList;
         this.subjectList = subjectList;
         this.courseList = courseList;
-        this.email=email;
+        this.coachingList = coachingList;
     }
 
     public Instructor() {
@@ -80,6 +86,14 @@ public class Instructor {
 
     public void setInstructorName(String instructorName) {
         this.instructorName = instructorName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public InstructorInfo getInstructorInfo() {
@@ -114,11 +128,11 @@ public class Instructor {
         this.courseList = courseList;
     }
 
-    public String getEmail() {
-        return email;
+    public List<Coaching> getCoachingList() {
+        return coachingList;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setCoachingList(List<Coaching> coachingList) {
+        this.coachingList = coachingList;
     }
 }

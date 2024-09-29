@@ -159,48 +159,6 @@ public class CourseServiceImpl implements CourseService {
         return finalSavedCourse;
     }
 
-//@Transactional
-//public Course addCourse(Course course) {
-//    System.out.println("Why this  is rnning");
-//    CourseType courseType = course.getCourseType();
-//    OfflineCourse offlineCourse = course.getOfflineCourse();
-//    OnlineCourse onlineCourse = course.getOnlineCourse();
-//Course newCourse =new Course();
-//    if (courseType != null && courseType.getCourseTypeName() != null && !courseType.getCourseTypeName().isEmpty()) {
-//        Optional<CourseType> existingCourseType = courseTypeDao.findByCourseTypeName(courseType.getCourseTypeName());
-//        if (existingCourseType.isPresent()) {
-//            course.setCourseType(existingCourseType.get());
-//        } else {
-//            courseType = courseTypeDao.save(courseType);
-//            course.setCourseType(courseType);
-//            newCourse=courseDao.save(course);
-//        }
-//    }
-//
-//    if (offlineCourse != null && offlineCourse.getStatus() != null && !offlineCourse.getStatus().isEmpty()) {
-//        System.out.println("offlineCourse Present");
-//        offlineCourseDao.save(offlineCourse);
-//        course.setOfflineCourse(offlineCourse);
-//
-//    }
-//try {
-//    if (onlineCourse != null && onlineCourse.getStatus() != null && !onlineCourse.getStatus().isEmpty()) {
-//        System.out.println("onlineCoursePresent" + onlineCourse);
-////        OnlineCourse newOnlineCourse = onlineCourseDao.save(onlineCourse);
-//        System.out.println("Exit");
-////        System.out.println("new" + newOnlineCourse);
-//        newCourse.setOnlineCourse(onlineCourse);
-//    }
-//}catch (Exception e){
-//    e.printStackTrace();
-//}
-//    System.out.println("priting setted course"+course);
-//
-//    System.out.println("Printing newCourse"+newCourse);
-//    return courseDao.save(newCourse);
-//}
-
-
     @Transactional
     public List<Course> addCourses(List<Course> courseList) {
         for (Course course : courseList) {
@@ -252,6 +210,7 @@ public class CourseServiceImpl implements CourseService {
             if (user.getRoles().stream().noneMatch(role ->
                     "STUDENT".equals(role.getRoleName()) ||
                             "ADMIN".equals(role.getRoleName()) ||
+                            "CO-ADMIN".equals(role.getRoleName())||
                             "INSTRUCTOR".equals(role.getRoleName()))) {
                 student = new Student();
                 student.setFirstName(user.getFirstName());

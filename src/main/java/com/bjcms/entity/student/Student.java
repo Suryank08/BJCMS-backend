@@ -3,6 +3,7 @@ package com.bjcms.entity.student;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.bjcms.entity.coaching.Coaching;
 import com.bjcms.entity.course.offline.Batch;
 import com.bjcms.entity.course.online.Comment;
 import com.bjcms.entity.course.online.OnlineCourse;
@@ -35,14 +36,18 @@ public class Student {
     private List<OnlineCourse> onlineCourseList = new ArrayList<>();
 
     @OneToMany(mappedBy = "student")
-    List<Comment> commentList = new ArrayList<>();
+    private List<Comment> commentList = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JsonBackReference
     @JoinTable(name = "batch_student_enrollment", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "batch_id"))
-    List<Batch> batchList = new ArrayList<>();
+   private List<Batch> batchList = new ArrayList<>();
 
-    public Student(int studentId, String firstName, String lastName, String email, String mobileNumber, List<OnlineCourse> onlineCourseList, List<Comment> commentList, List<Batch> batchList) {
+    @ManyToMany(cascade ={CascadeType.PERSIST,CascadeType.MERGE},fetch = FetchType.LAZY)
+    @JoinTable(name = "coaching_student",joinColumns = @JoinColumn(name = "student_id"),inverseJoinColumns = @JoinColumn(name = "coaching_id"))
+    private List<Coaching> coachingList=new ArrayList<>();
+
+    public Student(int studentId, String firstName, String lastName, String email, String mobileNumber, List<OnlineCourse> onlineCourseList, List<Comment> commentList, List<Batch> batchList, List<Coaching> coachingList) {
         this.studentId = studentId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -51,6 +56,7 @@ public class Student {
         this.onlineCourseList = onlineCourseList;
         this.commentList = commentList;
         this.batchList = batchList;
+        this.coachingList = coachingList;
     }
 
     public Student() {
@@ -118,5 +124,13 @@ public class Student {
 
     public void setBatchList(List<Batch> batchList) {
         this.batchList = batchList;
+    }
+
+    public List<Coaching> getCoachingList() {
+        return coachingList;
+    }
+
+    public void setCoachingList(List<Coaching> coachingList) {
+        this.coachingList = coachingList;
     }
 }
