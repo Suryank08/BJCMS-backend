@@ -1,17 +1,15 @@
 package com.bjcms.entity.student;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.bjcms.entity.coaching.Coaching;
 import com.bjcms.entity.course.offline.Batch;
 import com.bjcms.entity.course.online.Comment;
 import com.bjcms.entity.course.online.OnlineCourse;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "student")
@@ -31,7 +29,7 @@ public class Student {
     private String mobileNumber;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JsonBackReference
+//    @JsonBackReference
     @JoinTable(name = "online_course_student_enrollment", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "online_course_id"))
     private List<OnlineCourse> onlineCourseList = new ArrayList<>();
 
@@ -39,7 +37,7 @@ public class Student {
     private List<Comment> commentList = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JsonBackReference
+//    @JsonBackReference
     @JoinTable(name = "batch_student_enrollment", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "batch_id"))
    private List<Batch> batchList = new ArrayList<>();
 

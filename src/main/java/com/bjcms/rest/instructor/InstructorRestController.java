@@ -1,20 +1,14 @@
 package com.bjcms.rest.instructor;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.bjcms.entity.course.Course;
 import com.bjcms.entity.instructor.Instructor;
+import com.bjcms.responses.InstructorCreateRequest;
 import com.bjcms.service.instructor.InstructorService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/instructors")
@@ -28,9 +22,9 @@ public class InstructorRestController {
 
 
     @PostMapping("/create")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public Instructor addInstructor(@RequestBody Instructor instructor) {
-        return instructorService.addInstructor(instructor);
+    @PreAuthorize("hasAnyAuthority('ADMIN','CO-ADMIN')")
+    public void addInstructor(@RequestBody InstructorCreateRequest instructorRequest ) {
+     instructorService.addInstructor(instructorRequest);
     }
     @PostMapping("/update")
     @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR')")

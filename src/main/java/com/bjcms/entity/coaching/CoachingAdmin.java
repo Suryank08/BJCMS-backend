@@ -1,7 +1,6 @@
 package com.bjcms.entity.coaching;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -22,6 +21,7 @@ public class CoachingAdmin {
     @Column(name = "mob_num",nullable = false)
     private String mobileNumber;
     @OneToOne(mappedBy = "coachingAdmin")
+//    @JsonManagedReference
     private Coaching coaching;
 
     public CoachingAdmin(Integer coachingAdminId, String coachingAdminName, String coachingAdminEmail, String mobileNumber, Coaching coaching) {

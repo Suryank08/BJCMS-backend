@@ -1,9 +1,9 @@
 package com.bjcms.service.instructor;
 
+import com.bjcms.entity.instructor.Qualification;
+
 import java.util.List;
 import java.util.Optional;
-
-import com.bjcms.entity.instructor.Qualification;
 
 public interface QualificationService {
 

@@ -2,11 +2,11 @@ package com.bjcms.entity.coaching;
 
 import com.bjcms.entity.course.Course;
 import com.bjcms.entity.instructor.Instructor;
-import com.bjcms.entity.instructor.InstructorInfo;
 import com.bjcms.entity.student.Student;
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,6 @@ public class Coaching {
 
     @ManyToMany(cascade ={CascadeType.PERSIST,CascadeType.MERGE},fetch = FetchType.LAZY)
     @JoinTable(name = "coaching_instructor",joinColumns = @JoinColumn(name = "coaching_id"),inverseJoinColumns = @JoinColumn(name = "instructor_id"))
-    @JsonIgnore
     private List<Instructor> instructorList=new ArrayList<>();
 
     @ManyToMany(cascade ={CascadeType.PERSIST,CascadeType.MERGE},fetch = FetchType.LAZY)

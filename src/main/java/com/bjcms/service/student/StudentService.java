@@ -1,10 +1,9 @@
 package com.bjcms.service.student;
 
 
+import com.bjcms.entity.student.Student;
 
 import java.util.List;
-
-import com.bjcms.entity.student.Student;
 
 public interface StudentService {
     public List<Student> addStudent(List<Student> studentList);

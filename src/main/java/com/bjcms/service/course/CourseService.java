@@ -1,11 +1,10 @@
 package com.bjcms.service.course;
 
 
+import com.bjcms.entity.course.Course;
 
 import java.util.List;
 import java.util.Optional;
-
-import com.bjcms.entity.course.Course;
 
 public interface CourseService {
     public List<Course> addCourses(List<Course> courseList);

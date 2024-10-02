@@ -2,8 +2,6 @@ package com.bjcms.entity.course;
 
 import jakarta.persistence.*;
 
-import java.util.List;
-
 @Entity
 @Table(name = "course_type")
 public class CourseType {

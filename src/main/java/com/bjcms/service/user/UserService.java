@@ -1,8 +1,6 @@
 package com.bjcms.service.user;
 
 import com.bjcms.entity.user.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 import java.util.Optional;

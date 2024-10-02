@@ -1,8 +1,8 @@
 package com.bjcms.service.course.online;
 
-import java.util.List;
-
 import com.bjcms.entity.course.online.Comment;
+
+import java.util.List;
 
 public interface CommentService {
     List<Comment> addComment(List<Comment> commentList);

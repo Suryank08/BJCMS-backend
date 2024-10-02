@@ -1,17 +1,15 @@
 package com.bjcms.entity.course.online;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.bjcms.entity.course.Course;
 import com.bjcms.entity.course.Subject;
 import com.bjcms.entity.student.Student;
-
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "online_course")
@@ -41,7 +39,7 @@ public class OnlineCourse {
     List<Subject>subjectList=new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JsonManagedReference
+//    @JsonManagedReference
     @JoinTable(name = "online_course_student_enrollment",joinColumns = @JoinColumn(name = "online_course_id"),inverseJoinColumns = @JoinColumn(name="student_id"))
     List<Student>studentList=new ArrayList<>();
 

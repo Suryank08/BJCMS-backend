@@ -1,23 +1,22 @@
 package com.bjcms.service.instructor;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.bjcms.dao.instructor.InstructorDao;
 import com.bjcms.entity.course.Course;
 import com.bjcms.entity.course.Subject;
 import com.bjcms.entity.instructor.Instructor;
 import com.bjcms.entity.instructor.InstructorInfo;
 import com.bjcms.entity.instructor.Qualification;
+import com.bjcms.responses.InstructorCreateRequest;
 import com.bjcms.service.course.CourseService;
 import com.bjcms.service.course.SubjectService;
-
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class InstructorServiceImpl implements InstructorService {
@@ -40,8 +39,8 @@ public class InstructorServiceImpl implements InstructorService {
 
 
     @Transactional
-    public Instructor addInstructor(Instructor instructor) {
-        return instructorDao.save(instructor);
+    public void addInstructor(InstructorCreateRequest instructorCreateRequest) {
+
     }
 
     @Transactional

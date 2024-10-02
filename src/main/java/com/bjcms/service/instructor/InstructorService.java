@@ -1,13 +1,14 @@
 package com.bjcms.service.instructor;
 
 
-import java.util.List;
-
 import com.bjcms.entity.course.Course;
 import com.bjcms.entity.instructor.Instructor;
+import com.bjcms.responses.InstructorCreateRequest;
+
+import java.util.List;
 
 public interface InstructorService {
-    public Instructor addInstructor(Instructor instructor);
+    public void addInstructor(InstructorCreateRequest instructorCreateRequest);
     public List<Instructor> addInstructors(List<Instructor> instructorList);
 
     public void deleteInstructor(Integer id);

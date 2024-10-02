@@ -1,8 +1,8 @@
 package com.bjcms.service.course.online;
 
-import java.util.List;
-
 import com.bjcms.entity.course.online.OnlineCourse;
+
+import java.util.List;
 
 public interface OnlineCourseService {
     List<OnlineCourse> addOnlineCourses(List<OnlineCourse> onlineCourseList);

@@ -1,9 +1,9 @@
 package com.bjcms.service.instructor;
 
+import com.bjcms.entity.instructor.InstructorInfo;
+
 import java.util.List;
 import java.util.Optional;
-
-import com.bjcms.entity.instructor.InstructorInfo;
 
 public interface InstructorInfoService {
   

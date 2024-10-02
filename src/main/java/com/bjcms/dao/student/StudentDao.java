@@ -1,12 +1,9 @@
 package com.bjcms.dao.student;
 
-import com.bjcms.entity.user.User;
+import com.bjcms.entity.student.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.bjcms.entity.student.Student;
-
-import java.util.List;
 import java.util.Optional;
 
 @Repository

@@ -1,8 +1,8 @@
 package com.bjcms.service.course.offline;
 
-import java.util.List;
-
 import com.bjcms.entity.course.offline.OfflineCourse;
+
+import java.util.List;
 
 public interface OfflineCourseService {
     List<OfflineCourse> addOfflineCourses(List<OfflineCourse> offlineCourseList);

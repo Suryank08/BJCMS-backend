@@ -2,7 +2,6 @@ package com.bjcms.service.course.online;
 
 import com.bjcms.dao.course.AttendanceDateDao;
 import com.bjcms.dao.course.online.OnlineCourseAttendenceDao;
-import com.bjcms.dao.student.StudentDao;
 import com.bjcms.entity.course.AttendanceDateEntry;
 import com.bjcms.entity.course.Course;
 import com.bjcms.entity.course.online.OnlineCourseAttendance;

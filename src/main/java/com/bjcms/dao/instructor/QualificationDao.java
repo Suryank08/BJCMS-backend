@@ -1,11 +1,10 @@
 package com.bjcms.dao.instructor;
 
+import com.bjcms.entity.instructor.Qualification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import com.bjcms.entity.instructor.Qualification;
 
 @Repository
 public interface QualificationDao extends JpaRepository<Qualification, Integer> {

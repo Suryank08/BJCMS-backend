@@ -1,8 +1,8 @@
 package com.bjcms.service.course;
 
-import java.util.List;
-
 import com.bjcms.entity.course.CourseType;
+
+import java.util.List;
 
 public interface CourseTypeService {
     List<CourseType> addCourseType(List<CourseType> courseTypeList);

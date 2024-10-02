@@ -1,9 +1,9 @@
 package com.bjcms.service.course;
 
+import com.bjcms.entity.course.Subject;
+
 import java.util.List;
 import java.util.Optional;
-
-import com.bjcms.entity.course.Subject;
 
 public interface SubjectService {
     public List<Subject> addSubjects(List<Subject> subjectList);

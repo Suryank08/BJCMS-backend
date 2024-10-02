@@ -1,15 +1,6 @@
 package com.bjcms.entity.instructor;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.MapsId;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "instructor_info")
@@ -23,7 +14,6 @@ public class InstructorInfo {
     private String instructorInfoDetails;
 
     @OneToOne
-    @JsonBackReference
     @MapsId // Used when primary key is also used as foreign key & Use the same identifier as the Instructor entity & Maps instructorId as the primary key of this entity
     @JoinColumn(name = "instructor_id")
     private Instructor instructor;
