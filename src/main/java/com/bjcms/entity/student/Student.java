@@ -18,7 +18,7 @@ public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "student_id")
-    private int studentId;
+    private Integer studentId;
     @Column(name = "first_name")
     private String firstName;
     @Column(name = "last_name")
@@ -45,7 +45,7 @@ public class Student {
     @JoinTable(name = "coaching_student",joinColumns = @JoinColumn(name = "student_id"),inverseJoinColumns = @JoinColumn(name = "coaching_id"))
     private List<Coaching> coachingList=new ArrayList<>();
 
-    public Student(int studentId, String firstName, String lastName, String email, String mobileNumber, List<OnlineCourse> onlineCourseList, List<Comment> commentList, List<Batch> batchList, List<Coaching> coachingList) {
+    public Student(Integer studentId, String firstName, String lastName, String email, String mobileNumber, List<OnlineCourse> onlineCourseList, List<Comment> commentList, List<Batch> batchList, List<Coaching> coachingList) {
         this.studentId = studentId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -60,11 +60,11 @@ public class Student {
     public Student() {
     }
 
-    public int getStudentId() {
+    public Integer getStudentId() {
         return studentId;
     }
 
-    public void setStudentId(int studentId) {
+    public void setStudentId(Integer studentId) {
         this.studentId = studentId;
     }
 

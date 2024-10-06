@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -36,25 +37,25 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public User addUser(User credentials) {
-        User user = new User();
-        user.setFirstName(credentials.getFirstName());
-        user.setLastName(credentials.getLastName());
-        user.setEmail(credentials.getEmail());
-        user.setMobileNumber(credentials.getMobileNumber());
-        user.setPassword(passwordEncoder.encode(credentials.getPassword()));
-        Set<String> roleNames = credentials.getRoles().stream()
-                .map(Role::getRoleName)
-                .collect(Collectors.toSet());
-
-        // Handling roles
-        Set<Role> roles = credentials.getRoles().stream().map(role -> {
-            Optional<Role> existingRole = roleDao.findByRoleName(role.getRoleName());
-            return existingRole.orElseGet(() -> roleDao.save(role));
-        }).collect(Collectors.toSet());
-
-        user.setRoles(roles);
-
-        return userDao.save(user);
+        String email= credentials.getEmail();
+        Optional<User> optionalUser = userDao.findByEmail(email);
+        if(optionalUser.isPresent()){
+            throw new IllegalArgumentException("Email is already Registered with Our Platform");
+        }else {
+            Role userRole = roleDao.findByRoleName("USER")
+                    .orElseThrow(() -> new IllegalArgumentException("Role USER not found"));
+            User user = new User();
+            user.setFirstName(credentials.getFirstName());
+            user.setLastName(credentials.getLastName());
+            user.setEmail(email);
+            user.setMobileNumber(credentials.getMobileNumber());
+            user.setPassword(passwordEncoder.encode(credentials.getPassword()));
+            if (user.getRoles() == null) {
+                user.setRoles(new HashSet<>());  // Initialize with an empty HashSet or other Set implementation
+            }
+            user.getRoles().add(userRole);
+            return userDao.save(user);
+        }
     }
 
 

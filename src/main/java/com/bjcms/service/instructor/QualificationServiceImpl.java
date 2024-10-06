@@ -75,4 +75,8 @@ public class QualificationServiceImpl implements QualificationService {
         return qualificationDao.findById(id);
     }
 
+    public List<Qualification> findAllQualificationBysIds(List<Integer> qualificationIdsList){
+        return qualificationDao.findAllById(qualificationIdsList);
+    }
+
 }

@@ -26,7 +26,7 @@ public class Instructor {
     @OneToOne(mappedBy = "instructor",cascade = CascadeType.ALL,orphanRemoval = true)
     private InstructorInfo instructorInfo;
 
-    @ManyToMany(cascade ={CascadeType.PERSIST,CascadeType.MERGE},fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     @JoinTable(name = "instructor_qualification",joinColumns = @JoinColumn(name = "instructor_id"),inverseJoinColumns = @JoinColumn(name = "qualification_id"))
    private List<Qualification> qualificationList =new ArrayList<>();
 

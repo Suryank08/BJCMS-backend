@@ -1,6 +1,7 @@
 package com.bjcms.service.student;
 
 
+import com.bjcms.dto.StudentDto.StudentDto;
 import com.bjcms.entity.student.Student;
 
 import java.util.List;
@@ -16,5 +17,5 @@ public interface StudentService {
 
     public List<Student> getAllStudent();
     public List<Student> courseEnrolledStudent(Integer courseId);
-
+    public List<StudentDto> getStudentsByCoachingId(Integer coachingId);
 }

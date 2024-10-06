@@ -1,5 +1,7 @@
 package com.bjcms.rest.instructor;
 
+import com.bjcms.dto.course.SubjectDto;
+import com.bjcms.dto.instructor.QualificationDto;
 import com.bjcms.entity.course.Subject;
 import com.bjcms.entity.instructor.Qualification;
 import com.bjcms.responses.SubjectQualificationFormResponse;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/qualification")
@@ -25,8 +28,10 @@ public class QualificationRestController {
 
     @GetMapping("/get/subject-qualification")
     public SubjectQualificationFormResponse getAllQualification(){
-        List<Qualification> qualificationList= qualificationService.getAllQualification();
-       List<Subject> subjectList =subjectService.getAllSubject();
+        List<QualificationDto> qualificationList= qualificationService.getAllQualification().stream().map(qualification -> new QualificationDto(qualification.getQualificationId(), qualification.getQualificationName())).collect(Collectors.toList());
+       List<SubjectDto> subjectList =subjectService.getAllSubject().stream()
+               .map(subject -> new SubjectDto(subject.getSubjectId(), subject.getSubjectName()))  // Map Subject to SubjectDto
+               .collect(Collectors.toList());
         SubjectQualificationFormResponse subjectQualificationFormResponse=new SubjectQualificationFormResponse(qualificationList,subjectList);
         return subjectQualificationFormResponse;
     }

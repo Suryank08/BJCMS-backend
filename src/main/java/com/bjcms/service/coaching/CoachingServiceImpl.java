@@ -2,6 +2,7 @@ package com.bjcms.service.coaching;
 
 import com.bjcms.dao.coaching.CoachingAdminDao;
 import com.bjcms.dao.coaching.CoachingDao;
+import com.bjcms.dto.coaching.CoachingDto;
 import com.bjcms.entity.coaching.Coaching;
 import com.bjcms.entity.coaching.CoachingAdmin;
 import jakarta.transaction.Transactional;
@@ -42,14 +43,18 @@ public class CoachingServiceImpl implements CoachingService {
             throw new RuntimeException(e);
         }
     }
+    public Coaching findCoachingByCoachingId(Integer coachingId){
+    return coachingDao.findById(coachingId).orElseThrow(()->new IllegalArgumentException("Coaching Id Not Found"));
+    }
 
-    public Coaching getCoachingOfCoachingAdmin(String email) {
-        try {
+    public CoachingDto getCoachingOfCoachingAdmin(String email) {
             CoachingAdmin coachingAdmin = coachingAdminDao.findByCoachingAdminEmail(email).orElseThrow(() -> new IllegalArgumentException("Coaching Admin Do not Exist"));
-        return coachingAdmin.getCoaching();
-        }catch(Exception e){
-            throw new RuntimeException(e);
-        }
+       Coaching coaching=coachingAdmin.getCoaching();
+        Integer totalInstructor=coaching.getInstructorList().size();
+        Integer totalStudent=coaching.getStudentList().size();
+        Integer totalCourse=coaching.getCoursesList().size();
+        CoachingDto coachingDto=new CoachingDto(coaching.getCoachingId(),coaching.getCoachingName(), coaching.getCoachingVision(), coaching.getCoachingAddress(),totalCourse,totalStudent,totalInstructor);
+        return coachingDto;
     }
 
 

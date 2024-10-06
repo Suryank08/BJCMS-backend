@@ -20,6 +20,8 @@ public interface QualificationService {
     public Qualification updateQualification(Qualification qualification);
 
     public Qualification findQualification(Integer id);
+
+    public List<Qualification> findAllQualificationBysIds(List<Integer> qualificationIdsList);
     
     public Optional<Qualification> findByQualificationId(Integer id);
 

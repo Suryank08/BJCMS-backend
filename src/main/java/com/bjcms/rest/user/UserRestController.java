@@ -1,11 +1,11 @@
 package com.bjcms.rest.user;
 
 import com.bjcms.config.authentication.JwtService;
-import com.bjcms.entity.user.Role;
 import com.bjcms.entity.user.User;
 import com.bjcms.responses.LoginResponse;
 import com.bjcms.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -13,7 +13,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/user")
@@ -22,25 +21,25 @@ public class UserRestController {
     private final JwtService jwtService;
 
     @Autowired
-    public UserRestController(UserService userService,JwtService jwtService) {
+    public UserRestController(UserService userService, JwtService jwtService) {
         this.userService = userService;
-        this.jwtService=jwtService;    }
+        this.jwtService = jwtService;
+    }
+//TODO for now use try and catch block later replace it with global exception handeling
 
- 
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/register")
-    public ResponseEntity<User> addUser(@RequestBody User user) {
-       Set<Role> roles= user.getRoles();
-        System.out.println(user.toString());
-        for(Role role :roles){
-            System.out.println(role.getRoleName());
+    public ResponseEntity<String> addUser(@RequestBody User user) {
+        try {
+            User registeredUser = userService.addUser(user);
+            return ResponseEntity.ok("User Saved Sucessfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
-        User registeredUser =  userService.addUser(user);
-        return ResponseEntity.ok(registeredUser);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> authenticateUser(@RequestBody User credentials){
+    public ResponseEntity<LoginResponse> authenticateUser(@RequestBody User credentials) {
         User authenticatedUser = userService.authenticateUser(credentials);
         System.out.println(authenticatedUser.toString());
         String jwtToken = jwtService.generateToken(authenticatedUser);
@@ -49,7 +48,10 @@ public class UserRestController {
         loginResponse.setToken(jwtToken);
         loginResponse.setExpiresIn(jwtService.getExpirationTime());
         return ResponseEntity.ok(loginResponse);
-    };
+    }
+
+    ;
+
     @PostMapping("/update")
     @PreAuthorize("hasAnyAuthority('ADMIN', 'USER', 'STUDENT' ,'INSTRUCTOR')")
     public User updateUser(@RequestBody User user) {

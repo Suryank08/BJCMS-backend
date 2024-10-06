@@ -1,5 +1,7 @@
 package com.bjcms.rest.coaching;
 
+
+import com.bjcms.dto.coaching.CoachingDto;
 import com.bjcms.entity.coaching.Coaching;
 import com.bjcms.service.coaching.CoachingService;
 import org.slf4j.Logger;
@@ -21,8 +23,6 @@ public class CoachingController {
 
     @GetMapping("/{coachingName}")
     public ResponseEntity<Coaching> getCoachingByName(@PathVariable String coachingName) {
-        String name= coachingName;
-        System.out.println(coachingName);
         log.debug("msg:- "+coachingName);
         if (coachingName != null && !coachingName.isEmpty()) {
             // Replace dashes with spaces if needed
@@ -55,11 +55,11 @@ public class CoachingController {
 
     @GetMapping("/get")
     @PreAuthorize("hasAuthority('CO-ADMIN')")
-    public ResponseEntity<Coaching> getCoachingOfCoachingAdmin(Principal principal){
+    public ResponseEntity<CoachingDto> getCoachingOfCoachingAdmin(Principal principal){
         String email=principal.getName();
-        Coaching coaching=coachingService.getCoachingOfCoachingAdmin(email);
-        if (coaching != null) {
-            return ResponseEntity.ok(coaching);
+        CoachingDto coachingDto=coachingService.getCoachingOfCoachingAdmin(email);
+        if (coachingDto != null) {
+             return ResponseEntity.ok(coachingDto);
         } else {
             return ResponseEntity.badRequest().body(null);
         }

@@ -104,4 +104,8 @@ public class SubjectServiceImpl implements SubjectService {
         subjects.forEach(subject -> subjectDao.delete(subject));
     }
 
+    public List<Subject> findAllSubjectByIds(List<Integer> subjectIdsList){
+        return subjectDao.findAllById(subjectIdsList);
+    }
+
 }

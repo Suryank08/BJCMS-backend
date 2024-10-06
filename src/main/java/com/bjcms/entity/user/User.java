@@ -78,6 +78,14 @@ public class User implements UserDetails {
         this.roles=roles;
     }
 
+    public User(String firstName, String lastName, String email, String mobileNumber, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.mobileNumber = mobileNumber;
+        this.password = password;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles.stream()

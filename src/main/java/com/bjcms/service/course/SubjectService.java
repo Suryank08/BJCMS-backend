@@ -21,5 +21,6 @@ public interface SubjectService {
     public void deleteAllSubject();
     
     Optional<Subject> findBySubjectId(Integer id);
+    public List<Subject> findAllSubjectByIds(List<Integer> subjectIdsList);
 }
 

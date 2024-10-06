@@ -5,6 +5,7 @@ import com.bjcms.entity.instructor.InstructorInfo;
 import java.util.List;
 
 public class InstructorCreateRequest {
+    private Integer coachingId;
    private String instructorName;
     private String email;
    private InstructorInfo instructorInfo;
@@ -12,7 +13,8 @@ public class InstructorCreateRequest {
    private List<Integer> subjectList;
    private String mobileNumber;
 
-    public InstructorCreateRequest(String instructorName, String email, InstructorInfo instructorInfo, List<Integer> qualificationList, List<Integer> subjectList, String mobileNumber) {
+    public InstructorCreateRequest(Integer coachingId, String instructorName, String email, InstructorInfo instructorInfo, List<Integer> qualificationList, List<Integer> subjectList, String mobileNumber) {
+        this.coachingId = coachingId;
         this.instructorName = instructorName;
         this.email = email;
         this.instructorInfo = instructorInfo;
@@ -38,6 +40,14 @@ public class InstructorCreateRequest {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public Integer getCoachingId() {
+        return coachingId;
+    }
+
+    public void setCoachingId(Integer coachingId) {
+        this.coachingId = coachingId;
     }
 
     public InstructorInfo getInstructorInfo() {

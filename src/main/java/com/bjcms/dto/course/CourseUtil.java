@@ -16,7 +16,7 @@ public class CourseUtil {
                 OfflineCourseDto offlineCourseDto = null;
                 OnlineCourseDto onlineCourseDto = null;
                 List<InstructorDto> instructorDtoList = course.getInstructorList().stream()
-                        .map(item -> new InstructorDto(item.getInstructorId(), item.getInstructorName()))
+                        .map(item -> new InstructorDto(item.getInstructorId(), item.getInstructorName(),item.getInstructorInfo().getInstructorInfoDetails()))
                         .collect(Collectors.toList());
                 if (course.getCourseType().getCourseTypeName().equals("offline")) {
                     List<BatchDto> batchDtos = course.getOfflineCourse().getBatchList().stream().map(batch -> new BatchDto(batch.getBatchId(), batch.getBatchName(), batch.getBatchTime())).toList();

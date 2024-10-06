@@ -1,32 +1,37 @@
 package com.bjcms.responses;
 
+import com.bjcms.dto.course.SubjectDto;
+import com.bjcms.dto.instructor.QualificationDto;
 import com.bjcms.entity.course.Subject;
 import com.bjcms.entity.instructor.Qualification;
 
 import java.util.List;
 
 public class SubjectQualificationFormResponse {
-   private List<Qualification> qualificationList;
-   private List<Subject> subjectList;
+   private List<QualificationDto> qualificationList;
+   private List<SubjectDto> subjectList;
 
-    public SubjectQualificationFormResponse(List<Qualification> qualificationList, List<Subject> subjectList) {
+    public SubjectQualificationFormResponse(List<QualificationDto> qualificationList, List<SubjectDto> subjectList) {
         this.qualificationList = qualificationList;
         this.subjectList = subjectList;
     }
 
-    public List<Qualification> getQualificationList() {
+    public SubjectQualificationFormResponse() {
+    }
+
+    public List<QualificationDto> getQualificationList() {
         return qualificationList;
     }
 
-    public void setQualificationList(List<Qualification> qualificationList) {
+    public void setQualificationList(List<QualificationDto> qualificationList) {
         this.qualificationList = qualificationList;
     }
 
-    public List<Subject> getSubjectList() {
+    public List<SubjectDto> getSubjectList() {
         return subjectList;
     }
 
-    public void setSubjectList(List<Subject> subjectList) {
+    public void setSubjectList(List<SubjectDto> subjectList) {
         this.subjectList = subjectList;
     }
 }
