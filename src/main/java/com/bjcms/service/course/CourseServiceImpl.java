@@ -11,6 +11,7 @@ import com.bjcms.dao.instructor.InstructorDao;
 import com.bjcms.dao.student.StudentDao;
 import com.bjcms.dao.user.RoleDao;
 import com.bjcms.dao.user.UserDao;
+import com.bjcms.entity.coaching.Coaching;
 import com.bjcms.entity.course.Course;
 import com.bjcms.entity.course.CourseType;
 import com.bjcms.entity.course.Subject;
@@ -22,6 +23,7 @@ import com.bjcms.entity.instructor.Instructor;
 import com.bjcms.entity.student.Student;
 import com.bjcms.entity.user.Role;
 import com.bjcms.entity.user.User;
+import com.bjcms.service.coaching.CoachingService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -44,9 +46,10 @@ public class CourseServiceImpl implements CourseService {
     private VideoDao videoDao;
     private InstructorDao instructorDao;
     private BatchDao batchDao;
+    private CoachingService coachingService;
 
     @Autowired
-    public CourseServiceImpl(CourseDao courseDao, BatchDao batchDao, SubjectDao subjectDao, InstructorDao instructorDao, VideoDao videoDao, CourseTypeDao courseTypeDao, UserDao userDao, StudentDao studentDao, RoleDao roleDao, OnlineCourseDao onlineCourseDao, OfflineCourseDao offlineCourseDao) {
+    public CourseServiceImpl(CourseDao courseDao,CoachingService coachingService, BatchDao batchDao, SubjectDao subjectDao, InstructorDao instructorDao, VideoDao videoDao, CourseTypeDao courseTypeDao, UserDao userDao, StudentDao studentDao, RoleDao roleDao, OnlineCourseDao onlineCourseDao, OfflineCourseDao offlineCourseDao) {
         this.courseDao = courseDao;
         this.courseTypeDao = courseTypeDao;
         this.userDao = userDao;
@@ -58,6 +61,7 @@ public class CourseServiceImpl implements CourseService {
         this.videoDao = videoDao;
         this.instructorDao = instructorDao;
         this.batchDao = batchDao;
+        this.coachingService=coachingService;
     }
 
     @Transactional
@@ -176,8 +180,9 @@ public class CourseServiceImpl implements CourseService {
         courseDao.delete(course);
     }
 
-    public List<Course> getAllCourse() {
-        List<Course> courseList = courseDao.findAll();
+    public List<Course> getAllCourseByCoachingId(Integer coachingId) {
+        Coaching coaching= coachingService.findCoachingByCoachingId(coachingId);
+        List<Course> courseList = coaching.getCoursesList();
         return courseList;
     }
 

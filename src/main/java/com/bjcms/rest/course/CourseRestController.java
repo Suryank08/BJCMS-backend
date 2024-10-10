@@ -26,10 +26,10 @@ public class CourseRestController {
         this.courseService = courseService;
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR','STUDENT','USER')")
-    @GetMapping("/")
-    public ResponseEntity<List<UserCoursesDto>> getAllCourse(){
-        List<Course> courseList = courseService.getAllCourse();
+    @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR','STUDENT','USER','CO-ADMIN')")
+    @GetMapping("/getByCoachingId")
+    public ResponseEntity<List<UserCoursesDto>> getAllCourseByCoachingId(@RequestParam("coachingId") Integer coachingId){
+        List<Course> courseList = courseService.getAllCourseByCoachingId(coachingId);
         List<UserCoursesDto> userCoursesDtoList = CourseUtil.parseCourseData(courseList);
              if(!userCoursesDtoList.isEmpty()) {
                  System.out.println("check This :" + userCoursesDtoList);
@@ -56,7 +56,7 @@ public class CourseRestController {
     @GetMapping("/instructorCourses")
     @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR')")
     public  List<Course> instructorCourse(Principal principal){
-        System.out.println("conntroller get Instructor Courses");
+        System.out.println("controller get Instructor Courses");
         String userName=principal.getName();
         return courseService.instructorCourses(userName);
     }

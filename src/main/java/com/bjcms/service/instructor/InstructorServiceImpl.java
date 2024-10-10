@@ -5,6 +5,7 @@ import com.bjcms.config.authentication.RandomPasswordGenerator;
 import com.bjcms.dao.instructor.InstructorDao;
 import com.bjcms.dao.user.RoleDao;
 import com.bjcms.dao.user.UserDao;
+import com.bjcms.dto.coaching.CoachingDto;
 import com.bjcms.dto.instructor.InstructorDto;
 import com.bjcms.entity.coaching.Coaching;
 import com.bjcms.entity.course.Course;
@@ -15,6 +16,7 @@ import com.bjcms.entity.instructor.Qualification;
 import com.bjcms.entity.user.Role;
 import com.bjcms.entity.user.User;
 import com.bjcms.responses.InstructorCreateRequest;
+import com.bjcms.rest.instructor.InstructorRestController;
 import com.bjcms.service.Email.EmailSenderService;
 import com.bjcms.service.coaching.CoachingService;
 import com.bjcms.service.course.CourseService;
@@ -76,45 +78,6 @@ public class InstructorServiceImpl implements InstructorService {
            }else{
                Optional<User> userOptional=userDao.findByEmail(email);
                if(userOptional.isPresent()){
-//                   User user =userOptional.get();
-//                   Role instructorRole = roleDao.findByRoleName("INSTRUCTOR")
-//                           .orElseThrow(() -> new IllegalArgumentException("Role 'INSTRUCTOR' not found"));
-//                   Instructor instructor;
-//                   if (user.getRoles().stream().noneMatch(role ->
-//                           "STUDENT".equals(role.getRoleName()) ||
-//                                   "ADMIN".equals(role.getRoleName()) ||
-//                                   "CO-ADMIN".equals(role.getRoleName())||
-//                                   "INSTRUCTOR".equals(role.getRoleName()))) {
-//                       List<Qualification> qualificationList= qualificationService.findAllQualificationBysIds(instructorCreateRequest.getQualificationList());
-//                       List<Subject> subjectList=subjectService.findAllSubjectByIds(instructorCreateRequest.getSubjectList());
-//                      instructor = new Instructor();
-//                       instructor.setInstructorName(instructorCreateRequest.getInstructorName());
-//                       instructor.setQualificationList(qualificationList);
-//                       instructor.setSubjectList(subjectList);
-//                       instructor.setCoachingList(coachingList);
-//                       instructor.setEmail(email);
-//
-//                       // Create and save InstructorInfo
-//                       InstructorInfo instructorInfo = instructorCreateRequest.getInstructorInfo();
-//
-//                       // Set bidirectional relationship
-//                       instructorInfo.setInstructor(instructor);  // Set Instructor in InstructorInfo
-//                       InstructorInfo savedInstructorInfo = instructorInfoService.addInstructorInfo(instructorInfo);
-//
-//                       // Now set the saved InstructorInfo in Instructor
-//                       instructor.setInstructorInfo(savedInstructorInfo);
-//
-//                       // Save the Instructor entity (with cascading, this will save InstructorInfo as well)
-//                       Instructor savedInstructor = instructorDao.save(instructor);
-//
-//                       // Assign role to user and save user
-//                       user.getRoles().add(instructorRole);
-//                       userDao.save(user);
-//
-//                       return savedInstructor;  // Return the saved instructor
-//                   }else{
-//                       throw  new IllegalArgumentException("User has already have an another role!!");
-//                   }
                    User user =userOptional.get();
                    return userToInstructor(user,instructorCreateRequest,coachingList);
 
@@ -314,5 +277,16 @@ public Instructor userToInstructor(User user ,InstructorCreateRequest instructor
       List<InstructorDto>instructorDtoList= instructorList.stream().map(instructor -> new InstructorDto(instructor.getInstructorId(),instructor.getInstructorName(),instructor.getInstructorInfo().getInstructorInfoDetails(),instructor.getQualificationList().stream().map(Qualification::getQualificationName).toList(),instructor.getSubjectList().stream().map(Subject::getSubjectName).toList(),instructor.getCourseList().stream().map(Course::getCourseName).toList())).toList();
         return instructorDtoList;
     }
+    public Instructor getInstructorByEmail(String email){
+        Instructor instructor= instructorDao.findByEmail(email).orElseThrow(()->new IllegalArgumentException("No Instructor Found By this Email"));
+        return  instructor;
+    }
+    public List<CoachingDto> getCoachingOfInstructor(String email){
+        Instructor instructor =getInstructorByEmail(email);
+        List<Coaching> coachingList=instructor.getCoachingList();
+        List<CoachingDto> coachingDtoList=coachingList.stream().map(coaching -> new CoachingDto(coaching.getCoachingId(),coaching.getCoachingName())).toList();
+        return coachingDtoList;
+    }
+
 
 }

@@ -19,6 +19,11 @@ public class CoachingDto {
         this.totalInstructor = totalInstructor;
     }
 
+    public CoachingDto(Integer coachingId, String coachingName) {
+        this.coachingId = coachingId;
+        this.coachingName = coachingName;
+    }
+
     public Integer getCoachingId() {
         return coachingId;
     }

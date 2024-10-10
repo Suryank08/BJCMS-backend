@@ -1,6 +1,7 @@
 package com.bjcms.service.instructor;
 
 
+import com.bjcms.dto.coaching.CoachingDto;
 import com.bjcms.dto.instructor.InstructorDto;
 import com.bjcms.entity.course.Course;
 import com.bjcms.entity.instructor.Instructor;
@@ -26,4 +27,6 @@ public interface InstructorService {
     public List<Course> getAllInstructorCoursesById(Integer id);
 
     public List<InstructorDto> getInstructorsByCoachingId(Integer coachingId);
+    public Instructor getInstructorByEmail(String email);
+    public List<CoachingDto> getCoachingOfInstructor(String email);
 }

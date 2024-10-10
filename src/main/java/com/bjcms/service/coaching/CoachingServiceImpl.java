@@ -5,9 +5,13 @@ import com.bjcms.dao.coaching.CoachingDao;
 import com.bjcms.dto.coaching.CoachingDto;
 import com.bjcms.entity.coaching.Coaching;
 import com.bjcms.entity.coaching.CoachingAdmin;
+import com.bjcms.entity.instructor.Instructor;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class CoachingServiceImpl implements CoachingService {
@@ -50,12 +54,18 @@ public class CoachingServiceImpl implements CoachingService {
     public CoachingDto getCoachingOfCoachingAdmin(String email) {
             CoachingAdmin coachingAdmin = coachingAdminDao.findByCoachingAdminEmail(email).orElseThrow(() -> new IllegalArgumentException("Coaching Admin Do not Exist"));
        Coaching coaching=coachingAdmin.getCoaching();
+        if (coaching == null) {
+            throw new EntityNotFoundException("Coaching does not exist for this Coaching Admin.");
+        }
         Integer totalInstructor=coaching.getInstructorList().size();
         Integer totalStudent=coaching.getStudentList().size();
         Integer totalCourse=coaching.getCoursesList().size();
         CoachingDto coachingDto=new CoachingDto(coaching.getCoachingId(),coaching.getCoachingName(), coaching.getCoachingVision(), coaching.getCoachingAddress(),totalCourse,totalStudent,totalInstructor);
         return coachingDto;
     }
+
+
+
 
 
 }

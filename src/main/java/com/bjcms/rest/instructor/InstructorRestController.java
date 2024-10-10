@@ -1,5 +1,6 @@
 package com.bjcms.rest.instructor;
 
+import com.bjcms.dto.coaching.CoachingDto;
 import com.bjcms.dto.instructor.InstructorDto;
 import com.bjcms.entity.course.Course;
 import com.bjcms.entity.instructor.Instructor;
@@ -13,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -83,5 +85,13 @@ public class InstructorRestController {
     public void deleteInstructor(@PathVariable int instructorId) {
         instructorService.deleteInstructor(instructorId);
         System.out.println("Instructor Deleted");
+    }
+
+    @GetMapping("/get/coachingName")
+    @PreAuthorize("hasAuthority('INSTRUCTOR')")
+    public ResponseEntity<List<CoachingDto>> getCoachingOfInstructor(Principal principal){
+        String email=principal.getName();
+        List<CoachingDto> coachingDto=instructorService.getCoachingOfInstructor(email);
+        return ResponseEntity.ok(coachingDto);
     }
 }
