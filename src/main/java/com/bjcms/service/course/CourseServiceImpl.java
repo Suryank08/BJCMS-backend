@@ -11,6 +11,8 @@ import com.bjcms.dao.instructor.InstructorDao;
 import com.bjcms.dao.student.StudentDao;
 import com.bjcms.dao.user.RoleDao;
 import com.bjcms.dao.user.UserDao;
+import com.bjcms.dto.coaching.CoachingDto;
+import com.bjcms.dto.course.CourseDto;
 import com.bjcms.entity.coaching.Coaching;
 import com.bjcms.entity.course.Course;
 import com.bjcms.entity.course.CourseType;
@@ -23,15 +25,14 @@ import com.bjcms.entity.instructor.Instructor;
 import com.bjcms.entity.student.Student;
 import com.bjcms.entity.user.Role;
 import com.bjcms.entity.user.User;
+import com.bjcms.responses.CourseCreationRequest;
 import com.bjcms.service.coaching.CoachingService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -65,11 +66,24 @@ public class CourseServiceImpl implements CourseService {
     }
 
     @Transactional
-    public Course addCourse(Course course, String email) {
-        System.out.println("Starting addCourse method" + course);
-
+    public Course addCourse(CourseCreationRequest courseCreationRequest, String email) {
+        System.out.println("Starting addCourse method" + courseCreationRequest);
+        Course course =new Course();
         // Handling CourseType
-        CourseType courseType = course.getCourseType();
+        course.setCourseImage(courseCreationRequest.getCourseImage());
+        course.setCourseName(courseCreationRequest.getCourseName());
+        course.setCourseDuration(courseCreationRequest.getCourseDuration());
+        course.setCourseCost(courseCreationRequest.getCourseCost());
+        course.setCourseDescription(courseCreationRequest.getCourseDescription());
+        course.setStartDate(courseCreationRequest.getStartDate());
+        course.setEndDate(courseCreationRequest.getEndDate());
+        Coaching coaching=coachingService.findCoachingByCoachingId(Integer.parseInt(courseCreationRequest.getCoachingId()));
+        if(coaching!=null){
+            course.setCoaching(coaching);
+        }else {
+            throw new IllegalArgumentException("Coaching Id Not Found");
+        }
+        CourseType courseType = courseCreationRequest.getCourseType();
         if (courseType != null && courseType.getCourseTypeName() != null && !courseType.getCourseTypeName().isEmpty()) {
             Optional<CourseType> existingCourseType = courseTypeDao.findByCourseTypeName(courseType.getCourseTypeName());
             if (existingCourseType.isPresent()) {
@@ -85,14 +99,13 @@ public class CourseServiceImpl implements CourseService {
         System.out.println("Course saved with ID: " + savedCourse.getCourseId());
 
 //     Handling OfflineCourse
-        OfflineCourse offlineCourse = course.getOfflineCourse();
-        OnlineCourse onlineCourse = course.getOnlineCourse();
+        OfflineCourse offlineCourse = courseCreationRequest.getOfflineCourse();
+        OnlineCourse onlineCourse = courseCreationRequest.getOnlineCourse();
         if (courseType.getCourseTypeName().equals("offline") && offlineCourse != null && offlineCourse.getStatus() != null && !offlineCourse.getStatus().isEmpty()) {
             System.out.println("OfflineCourse present");
 
             offlineCourse.setCourse(savedCourse);
             OfflineCourse savedOfflineCourse = offlineCourseDao.save(offlineCourse);
-            System.out.println(savedOfflineCourse.toString());
             if (offlineCourse.getSubjectList() != null && !offlineCourse.getSubjectList().isEmpty()) {
                 System.out.println("inside Subject");
                 List<Subject> subjectList = savedOfflineCourse.getSubjectList();
@@ -136,7 +149,7 @@ public class CourseServiceImpl implements CourseService {
 
         }
         //TODO later upgrade instructor functionality to add multiple instructors for time being i am setting Course  instructorList to instructor who has currently logged in
-        List<Instructor> instructorList = course.getInstructorList();
+        List<Instructor> instructorList = courseCreationRequest.getInstructorList();
         if (instructorList != null && !instructorList.isEmpty()) {
             System.out.println("inside Instructor");
 //        for (Instructor instructor : instructorList) {
@@ -289,12 +302,42 @@ public class CourseServiceImpl implements CourseService {
         }
 
     }
+//       this.courseId = courseId;
+//        this.courseImage = courseImage;
+//        this.courseName = courseName;
+//        this.courseDuration = courseDuration;
+//        this.courseCost = courseCost;
+//        this.courseDescription = courseDescription;
+//        this.startDate = startDate;
+//        this.endDate = endDate;
+//        this.courseTypeName = courseTypeName;
+//        this.courseStatus = courseStatus;
 
-    public List<Course>instructorCourses(String userName) {
+    public List<CourseDto>instructorCourses(String userName) {
         try {
             Instructor instructor = instructorDao.findByEmail(userName).orElseThrow(() -> new IllegalArgumentException("Can not find Instructor"));
             List<Course> courseList = instructor.getCourseList();
-            return courseList;
+            List<CourseDto> courseDtoList = courseList.stream().map(course -> {
+                Integer courseId=course.getCourseId();
+                String courseName=course.getCourseName();
+                String courseImage=course.getCourseImage();
+                String courseDuration=course.getCourseDuration();
+                String courseCost=course.getCourseCost();
+                String courseDescription=course.getCourseDescription();
+                String courseTypeName=course.getCourseName();
+                Date startDate=course.getStartDate();
+                Date endDate =course.getEndDate();
+                String courseStatus=null;
+              if(courseTypeName.equals("offline")){
+                  courseStatus=course.getOfflineCourse().getStatus();
+              }else if(courseTypeName.equals("online")){
+                  courseStatus=course.getOnlineCourse().getStatus();
+              }
+//                public CourseDto(Integer courseId, String courseImage, String courseName, String courseDuration, String courseCost, String courseDescription, Date startDate, Date endDate, String courseTypeName, String courseStatus)
+              return new CourseDto(courseId,courseImage,courseName,courseDuration,courseCost,courseDescription,startDate,endDate,courseTypeName,courseStatus);
+            }).toList();
+
+            return courseDtoList;
         } catch (Exception e) {
             throw new RuntimeException("Failed to get Instructor course", e);
         }

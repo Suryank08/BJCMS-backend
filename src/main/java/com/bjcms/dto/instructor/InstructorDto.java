@@ -13,7 +13,7 @@ public class InstructorDto {
     //FIXME for now we are using String to represent course later replace it with instructorCourseDto
     private List<String> courseList;
     //TODO Later make instructorDtos then return whole course of instructor in frontend to viewd by coaching Admin(feature)
-//    private List<InstructorCourseDto> instructorCourseDtoList;
+//    private List<CourseDto> instructorCourseDtoList;
 
 
     public InstructorDto(Integer instructorId, String instructorName, String instructorInfo, List<String> qualificationList, List<String> subjectList, List<String> courseList) {

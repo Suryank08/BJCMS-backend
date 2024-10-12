@@ -1,13 +1,16 @@
 package com.bjcms.rest.course;
 
+import com.bjcms.dto.course.CourseDto;
 import com.bjcms.dto.course.CourseUtil;
 import com.bjcms.dto.course.UserCoursesDto;
 import com.bjcms.entity.course.Course;
+import com.bjcms.responses.CourseCreationRequest;
 import com.bjcms.responses.EnrollmentRequest;
 import com.bjcms.service.course.CourseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -54,18 +57,21 @@ public class CourseRestController {
     }
 
     @GetMapping("/instructorCourses")
-    @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR')")
-    public  List<Course> instructorCourse(Principal principal){
+    @PreAuthorize("hasAnyAuthority('ADMIN','CO-ADMIN','INSTRUCTOR')")
+    public  ResponseEntity<List<CourseDto>> instructorCourse(Principal principal){
         System.out.println("controller get Instructor Courses");
-        String userName=principal.getName();
-        return courseService.instructorCourses(userName);
+        if (principal == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        String userName = principal.getName();
+        return ResponseEntity.ok(courseService.instructorCourses(userName));
     }
 
     @PostMapping("/create")
    @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR')")
-    public Course addCourse(@RequestBody Course course,Principal principal){
+    public Course addCourse(@RequestBody CourseCreationRequest courseCreationRequest, Principal principal){
         String email =principal.getName();
-        return courseService.addCourse(course,email);
+        return courseService.addCourse(courseCreationRequest,email);
     }
 
     //TODO Protect this method
