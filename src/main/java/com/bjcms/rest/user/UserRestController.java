@@ -3,6 +3,7 @@ package com.bjcms.rest.user;
 import com.bjcms.config.authentication.JwtService;
 import com.bjcms.entity.user.User;
 import com.bjcms.responses.LoginResponse;
+import com.bjcms.responses.UserRequest;
 import com.bjcms.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -10,8 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -50,12 +53,45 @@ public class UserRestController {
         return ResponseEntity.ok(loginResponse);
     }
 
-    ;
+    @PostMapping("/refresh-token")
+    @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR','STUDENT','USER')")
+    public ResponseEntity<LoginResponse> refreshToken(@RequestHeader("Authorization") String token, Principal principal) {
+        // Check if the token starts with "Bearer "
+        if (token == null || !token.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+
+        // Extract the actual token by removing the "Bearer " prefix
+        String jwtToken = token.substring(7);
+
+        // Get the username from the Principal
+        String username = principal.getName();
+        User user = userService.findUserByEmail(username);
+
+        // Validate the existing token
+        if (jwtService.validateToken(jwtToken, user.getUsername())) {
+            // Generate a new token for the user
+            String newToken = jwtService.generateToken(user);
+
+            // Prepare the login response
+            LoginResponse loginResponse = new LoginResponse();
+            loginResponse.setToken(newToken);
+            loginResponse.setExpiresIn(jwtService.getExpirationTime());
+
+            return ResponseEntity.ok(loginResponse);
+        } else {
+            // If the token is invalid, return an unauthorized response
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        }
+    }
+
 
     @PostMapping("/update")
-    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER', 'STUDENT' ,'INSTRUCTOR')")
-    public User updateUser(@RequestBody User user) {
-        return userService.updateUser(user);
+    @PreAuthorize("hasAnyAuthority('ADMIN', 'USER','CO-ADMIN' ,'STUDENT' ,'INSTRUCTOR')")
+    public  ResponseEntity<User> updateUser(@RequestBody UserRequest userRequest, Principal principal) {
+        String email=principal.getName();
+       User user= userService.updateUser(userRequest,email);
+       return ResponseEntity.ok(user);
     }
 
     @GetMapping("/current")

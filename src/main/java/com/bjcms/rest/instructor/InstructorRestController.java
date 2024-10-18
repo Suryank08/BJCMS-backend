@@ -1,6 +1,7 @@
 package com.bjcms.rest.instructor;
 
 import com.bjcms.dto.coaching.CoachingDto;
+import com.bjcms.dto.instructor.InstructorDetailedDto;
 import com.bjcms.dto.instructor.InstructorDto;
 import com.bjcms.entity.course.Course;
 import com.bjcms.entity.instructor.Instructor;
@@ -69,7 +70,7 @@ public class InstructorRestController {
 
     @GetMapping("/{instructorId}")
     @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR','STUDENT','USER')")
-    public Instructor getInstructor(@PathVariable int instructorId) {
+    public InstructorDetailedDto getInstructor(@PathVariable int instructorId) {
         return instructorService.findInstructor(instructorId);
     }
 

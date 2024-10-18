@@ -13,6 +13,7 @@ import com.bjcms.dao.user.RoleDao;
 import com.bjcms.dao.user.UserDao;
 import com.bjcms.dto.coaching.CoachingDto;
 import com.bjcms.dto.course.CourseDto;
+import com.bjcms.dto.course.SubjectDto;
 import com.bjcms.entity.coaching.Coaching;
 import com.bjcms.entity.course.Course;
 import com.bjcms.entity.course.CourseType;
@@ -302,16 +303,6 @@ public class CourseServiceImpl implements CourseService {
         }
 
     }
-//       this.courseId = courseId;
-//        this.courseImage = courseImage;
-//        this.courseName = courseName;
-//        this.courseDuration = courseDuration;
-//        this.courseCost = courseCost;
-//        this.courseDescription = courseDescription;
-//        this.startDate = startDate;
-//        this.endDate = endDate;
-//        this.courseTypeName = courseTypeName;
-//        this.courseStatus = courseStatus;
 
     public List<CourseDto>instructorCourses(String userName) {
         try {
@@ -324,17 +315,18 @@ public class CourseServiceImpl implements CourseService {
                 String courseDuration=course.getCourseDuration();
                 String courseCost=course.getCourseCost();
                 String courseDescription=course.getCourseDescription();
-                String courseTypeName=course.getCourseName();
+                String courseTypeName=course.getCourseType().getCourseTypeName();
                 Date startDate=course.getStartDate();
                 Date endDate =course.getEndDate();
                 String courseStatus=null;
+                List<SubjectDto> subjectDtoList=new ArrayList<>();
               if(courseTypeName.equals("offline")){
                   courseStatus=course.getOfflineCourse().getStatus();
+                  subjectDtoList.addAll(course.getOfflineCourse().getSubjectList().stream().map(subject -> new SubjectDto(subject.getSubjectId(),subject.getSubjectName())).toList());
               }else if(courseTypeName.equals("online")){
-                  courseStatus=course.getOnlineCourse().getStatus();
+                  subjectDtoList.addAll(course.getOnlineCourse().getSubjectList().stream().map(subject -> new SubjectDto(subject.getSubjectId(),subject.getSubjectName())).toList());
               }
-//                public CourseDto(Integer courseId, String courseImage, String courseName, String courseDuration, String courseCost, String courseDescription, Date startDate, Date endDate, String courseTypeName, String courseStatus)
-              return new CourseDto(courseId,courseImage,courseName,courseDuration,courseCost,courseDescription,startDate,endDate,courseTypeName,courseStatus);
+            return new CourseDto(courseId,courseImage,courseName,courseDuration,courseCost,courseDescription,startDate,endDate,courseTypeName,courseStatus,subjectDtoList);
             }).toList();
 
             return courseDtoList;

@@ -3,6 +3,7 @@ package com.bjcms.dto.course;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.util.Date;
+import java.util.List;
 
 public class CourseDto {
     private Integer courseId;
@@ -17,8 +18,9 @@ public class CourseDto {
     private Date endDate;
     private String courseTypeName;
     private String courseStatus;
+    private List<SubjectDto> subjectList;
 
-    public CourseDto(Integer courseId, String courseImage, String courseName, String courseDuration, String courseCost, String courseDescription, Date startDate, Date endDate, String courseTypeName, String courseStatus) {
+    public CourseDto(Integer courseId, String courseImage, String courseName, String courseDuration, String courseCost, String courseDescription, Date startDate, Date endDate, String courseTypeName, String courseStatus, List<SubjectDto> subjectList) {
         this.courseId = courseId;
         this.courseImage = courseImage;
         this.courseName = courseName;
@@ -29,6 +31,7 @@ public class CourseDto {
         this.endDate = endDate;
         this.courseTypeName = courseTypeName;
         this.courseStatus = courseStatus;
+        this.subjectList = subjectList;
     }
 
     public Integer getCourseId() {
@@ -109,5 +112,13 @@ public class CourseDto {
 
     public void setCourseStatus(String courseStatus) {
         this.courseStatus = courseStatus;
+    }
+
+    public List<SubjectDto> getSubjectList() {
+        return subjectList;
+    }
+
+    public void setSubjectList(List<SubjectDto> subjectList) {
+        this.subjectList = subjectList;
     }
 }

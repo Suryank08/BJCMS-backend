@@ -2,6 +2,7 @@ package com.bjcms.service.instructor;
 
 
 import com.bjcms.dto.coaching.CoachingDto;
+import com.bjcms.dto.instructor.InstructorDetailedDto;
 import com.bjcms.dto.instructor.InstructorDto;
 import com.bjcms.entity.course.Course;
 import com.bjcms.entity.instructor.Instructor;
@@ -20,7 +21,7 @@ public interface InstructorService {
 
     public Instructor updateInstructor(Instructor instructor);
 
-    public Instructor findInstructor(Integer id);
+    public InstructorDetailedDto findInstructor(Integer id);
 
     public List<Instructor> getAllInstructor();
 

@@ -3,7 +3,7 @@ package com.bjcms.service.student;
 
 import com.bjcms.dao.course.CourseDao;
 import com.bjcms.dao.student.StudentDao;
-import com.bjcms.dto.StudentDto.StudentDto;
+import com.bjcms.dto.Student.StudentDto;
 import com.bjcms.entity.coaching.Coaching;
 import com.bjcms.entity.course.Course;
 import com.bjcms.entity.course.offline.Batch;
@@ -65,7 +65,7 @@ public class StudentServiceImpl implements StudentService {
         return student;
     }
 
-    public List<Student> courseEnrolledStudent(Integer courseId) {
+    public List<StudentDto> courseEnrolledStudent(Integer courseId) {
         List<Student> studentList = null;
         try {
 
@@ -82,7 +82,8 @@ public class StudentServiceImpl implements StudentService {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return studentList;
+        assert studentList != null;
+        return convertStudentlistToStudentDtoList(studentList);
     }
 
     public List<StudentDto> getStudentsByCoachingId(Integer coachingId) {
@@ -120,6 +121,39 @@ public class StudentServiceImpl implements StudentService {
                 })
                 .toList();
 
+        return studentDtoList;
+    }
+    public List<StudentDto> convertStudentlistToStudentDtoList(List<Student> studentList){
+        List<StudentDto> studentDtoList = studentList.stream()
+                .map(student -> {
+                    String fullName = student.getFirstName() + " " + student.getLastName();
+                    List<String> instructorNames = student.getBatchList().stream()
+                            .flatMap(batch -> batch.getOfflineCourse().getCourse().getInstructorList().stream())
+                            .map(Instructor::getInstructorName)
+                            .collect(Collectors.toList());
+
+                    List<String> courseNames = Stream.concat(
+                            student.getOnlineCourseList().stream()
+                                    .map(onlineCourse -> onlineCourse.getCourse().getCourseName()),
+                            student.getBatchList().stream()
+                                    .map(batch -> batch.getOfflineCourse().getCourse().getCourseName())
+                    ).collect(Collectors.toList());
+
+                    List<String> batchNames = student.getBatchList().stream()
+                            .map(Batch::getBatchName)
+                            .collect(Collectors.toList());
+
+                    return new StudentDto(
+                            student.getStudentId(),
+                            fullName,
+                            student.getEmail(),
+                            student.getMobileNumber(),
+                            instructorNames,
+                            courseNames,
+                            batchNames
+                    );
+                })
+                .toList();
         return studentDtoList;
     }
 

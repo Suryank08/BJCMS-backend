@@ -1,4 +1,4 @@
-package com.bjcms.dto.StudentDto;
+package com.bjcms.dto.Student;
 import java.util.List;
 
 public class StudentDto {

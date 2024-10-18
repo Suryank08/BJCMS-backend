@@ -2,6 +2,7 @@ package com.bjcms.config.authentication;
 
 import com.bjcms.entity.user.User;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -11,13 +12,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Service
 public class JwtService {
+
     @Value("${security.jwt.secret-key}")
     private String secretKey;
 
@@ -33,16 +33,13 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
-//    public String generateToken(UserDetails userDetails) {
-//        return generateToken(new HashMap<>(), userDetails);
-//    }
-
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("userId",user.getUserId());
+        claims.put("userId", user.getUserId());
         claims.put("firstName", user.getFirstName());
         claims.put("lastName", user.getLastName());
         claims.put("email", user.getEmail());
+        claims.put("mobileNumber",user.getMobileNumber());
         claims.put("roles", user.getAuthorities()); // Assuming your User class has a method to get roles
 
         return Jwts.builder()
@@ -50,7 +47,10 @@ public class JwtService {
                 .setSubject(user.getEmail()) // or user.getUsername() if you're using a username
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpiration))
-                .signWith(SignatureAlgorithm.HS512, secretKey) // Choose an appropriate algorithm
+                .setIssuer("bjcms")  // Add issuer to verify where the token came from
+                .setAudience("web-app") // Set audience for the token
+                .setId(UUID.randomUUID().toString())
+                .signWith(getSignInKey(), SignatureAlgorithm.HS512) // Use getSignInKey and HS512
                 .compact();
     }
 
@@ -73,7 +73,9 @@ public class JwtService {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
-                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .setIssuer("bjcms") // Ensure issuer is the same across the app
+                .setAudience("web-app") // Ensure audience is the same across the app
+                .signWith(getSignInKey(), SignatureAlgorithm.HS512) // Use HS512 consistently
                 .compact();
     }
 
@@ -103,4 +105,18 @@ public class JwtService {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+    public boolean validateToken(String token, String username) {
+        try {
+            // Extract username from the token
+            final String extractedUsername = extractUsername(token);
+
+            // Check if the token is expired
+            return (extractedUsername.equals(username) && !isTokenExpired(token));
+        } catch (ExpiredJwtException e) {
+            return false; // Token is expired
+        } catch (Exception e) {
+            return false; // Token is invalid
+        }
+    }
+
 }

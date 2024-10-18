@@ -4,6 +4,7 @@ import com.bjcms.dao.user.RoleDao;
 import com.bjcms.dao.user.UserDao;
 import com.bjcms.entity.user.Role;
 import com.bjcms.entity.user.User;
+import com.bjcms.responses.UserRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -17,8 +18,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -68,8 +67,7 @@ public class UserServiceImpl implements UserService {
                            credentials.getPassword()
                    )
            );
-                return userDao.findByEmail(credentials.getEmail())
-                        .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + credentials.getEmail()));
+                return findUserByEmail(credentials.getEmail());
        }catch(AuthenticationException e) {
            throw new RuntimeException("Invalid credentials");
        }
@@ -78,9 +76,14 @@ public class UserServiceImpl implements UserService {
 
 
     @Transactional
-    public User updateUser(User user) {
+    public User updateUser(UserRequest userRequest, String email) {
+        User user=findUserByEmail(email);
+        user.setFirstName(userRequest.getFirstName());
+        user.setLastName(userRequest.getLastName());
+        user.setMobileNumber(userRequest.getMobileNumber());
         return userDao.save(user);
     }
+
 
     @Transactional
     public void deleteUser(int id) {
@@ -104,5 +107,10 @@ public class UserServiceImpl implements UserService {
 
     public Optional<User> findByUserId(Integer id) {
         return userDao.findById(id);
+    }
+
+    public User findUserByEmail(String email) {
+        User user=userDao.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+        return user;
     }
 }

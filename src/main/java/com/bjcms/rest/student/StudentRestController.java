@@ -1,7 +1,6 @@
 package com.bjcms.rest.student;
 
-import com.bjcms.dto.StudentDto.StudentDto;
-import com.bjcms.dto.instructor.InstructorDto;
+import com.bjcms.dto.Student.StudentDto;
 import com.bjcms.entity.student.Student;
 import com.bjcms.service.student.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,8 +52,15 @@ public class StudentRestController  {
     }
 
     @PostMapping("/courseEnrolledStudent")
-    public List<Student> courseEnrolledStudent(@RequestBody Integer courseId){
-        return studentService.courseEnrolledStudent(courseId);
+    public ResponseEntity<List<StudentDto>> courseEnrolledStudent(@RequestBody Integer courseId){
+        List<StudentDto> studentDtoList= studentService.courseEnrolledStudent(courseId);
+
+        if(studentDtoList!=null && !studentDtoList.isEmpty()) {
+            return ResponseEntity.ok(studentDtoList);
+        }
+        else{
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @DeleteMapping("/{studentId}")

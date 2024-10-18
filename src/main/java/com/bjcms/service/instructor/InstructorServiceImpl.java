@@ -5,7 +5,11 @@ import com.bjcms.config.authentication.RandomPasswordGenerator;
 import com.bjcms.dao.instructor.InstructorDao;
 import com.bjcms.dao.user.RoleDao;
 import com.bjcms.dao.user.UserDao;
+import com.bjcms.dto.Student.StudentDto;
 import com.bjcms.dto.coaching.CoachingDto;
+import com.bjcms.dto.course.CourseDto;
+import com.bjcms.dto.course.SubjectDto;
+import com.bjcms.dto.instructor.InstructorDetailedDto;
 import com.bjcms.dto.instructor.InstructorDto;
 import com.bjcms.entity.coaching.Coaching;
 import com.bjcms.entity.course.Course;
@@ -13,21 +17,21 @@ import com.bjcms.entity.course.Subject;
 import com.bjcms.entity.instructor.Instructor;
 import com.bjcms.entity.instructor.InstructorInfo;
 import com.bjcms.entity.instructor.Qualification;
+import com.bjcms.entity.student.Student;
 import com.bjcms.entity.user.Role;
 import com.bjcms.entity.user.User;
 import com.bjcms.responses.InstructorCreateRequest;
-import com.bjcms.rest.instructor.InstructorRestController;
 import com.bjcms.service.Email.EmailSenderService;
 import com.bjcms.service.coaching.CoachingService;
 import com.bjcms.service.course.CourseService;
 import com.bjcms.service.course.SubjectService;
+import com.bjcms.service.student.StudentService;
 import com.bjcms.service.user.UserService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+
+import java.util.*;
 
 @Service
 public class InstructorServiceImpl implements InstructorService {
@@ -36,6 +40,7 @@ public class InstructorServiceImpl implements InstructorService {
     private InstructorDao instructorDao;
     private CourseService courseService;
     private InstructorInfoService instructorInfoService;
+    private StudentService studentService;
     private SubjectService subjectService;
     private QualificationService qualificationService;
     private CoachingService coachingService;
@@ -45,7 +50,7 @@ public class InstructorServiceImpl implements InstructorService {
     private EmailSenderService emailSenderService;
 
     @Autowired
-    public InstructorServiceImpl(InstructorDao instructorDao,EmailSenderService emailSenderService,UserService userService, CourseService courseService,RoleDao roleDao, UserDao userDao,InstructorInfoService instructorInfoService, SubjectService subjectService, QualificationService qualificationService, CoachingService coachingService) {
+    public InstructorServiceImpl(InstructorDao instructorDao, StudentService studentService,EmailSenderService emailSenderService, UserService userService, CourseService courseService, RoleDao roleDao, UserDao userDao, InstructorInfoService instructorInfoService, SubjectService subjectService, QualificationService qualificationService, CoachingService coachingService) {
         this.instructorDao = instructorDao;
         this.courseService = courseService;
         this.instructorInfoService = instructorInfoService;
@@ -56,6 +61,7 @@ public class InstructorServiceImpl implements InstructorService {
         this.roleDao=roleDao;
         this.userService=userService;
         this.emailSenderService=emailSenderService;
+        this.studentService=studentService;
     }
 
     @Transactional
@@ -252,12 +258,90 @@ public Instructor userToInstructor(User user ,InstructorCreateRequest instructor
         List<Instructor> instructors = instructorDao.findAll();
         instructors.forEach(instructor -> instructorDao.delete(instructor));
     }
+    public InstructorDetailedDto findInstructor(Integer id) {
+        Instructor instructor = instructorDao.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Instructor id incorrect"));
 
+        InstructorDto instructorDto = new InstructorDto(
+                instructor.getInstructorId(),
+                instructor.getInstructorName(),
+                instructor.getEmail(),
+                instructor.getInstructorInfo().getInstructorInfoDetails()
+        );
 
-    public Instructor findInstructor(Integer id) {
-        Optional<Instructor> optionalInstructor = instructorDao.findById(id);
-        Instructor instructor = optionalInstructor.orElse(new Instructor());
-        return instructor;
+        List<Student> studentList = new ArrayList<>();
+        Set<Integer> addedStudentIds = new HashSet<>(); // For tracking added student IDs
+
+        List<CourseDto> courseDtoList = instructor.getCourseList().stream().map(course -> {
+            Integer courseId = course.getCourseId();
+            String courseName = course.getCourseName();
+            String courseImage = course.getCourseImage();
+            String courseDuration = course.getCourseDuration();
+            String courseCost = course.getCourseCost();
+            String courseDescription = course.getCourseDescription();
+            String courseTypeName = course.getCourseType().getCourseTypeName();
+            Date startDate = course.getStartDate();
+            Date endDate = course.getEndDate();
+            String courseStatus = null;
+
+            List<SubjectDto> subjectDtoList = new ArrayList<>();
+
+            if (courseTypeName.equals("offline")) {
+                courseStatus = course.getOfflineCourse().getStatus();
+
+                // Iterate over batchList and add students without duplicates
+                course.getOfflineCourse().getBatchList().forEach(batch -> {
+                    batch.getStudentList().forEach(student -> {
+                        if (addedStudentIds.add(student.getStudentId())) { // Add if student ID is not already in the set
+                            studentList.add(student); // Add only unique students
+                        }
+                    });
+                });
+
+                // Add subjects for offline courses
+                subjectDtoList.addAll(course.getOfflineCourse().getSubjectList().stream()
+                        .map(subject -> new SubjectDto(subject.getSubjectId(), subject.getSubjectName()))
+                        .toList()
+                );
+
+            } else if (courseTypeName.equals("online")) {
+                courseStatus = course.getOnlineCourse().getStatus();
+
+                // Add students from online course without duplicates
+                course.getOnlineCourse().getStudentList().forEach(student -> {
+                    if (addedStudentIds.add(student.getStudentId())) { // Add if student ID is not already in the set
+                        studentList.add(student); // Add only unique students
+                    }
+                });
+
+                // Add subjects for online courses
+                subjectDtoList.addAll(course.getOnlineCourse().getSubjectList().stream()
+                        .map(subject -> new SubjectDto(subject.getSubjectId(), subject.getSubjectName()))
+                        .toList()
+                );
+            }
+
+            return new CourseDto(
+                    courseId, courseImage, courseName, courseDuration, courseCost,
+                    courseDescription, startDate, endDate, courseTypeName, courseStatus, subjectDtoList
+            );
+        }).toList();
+
+        // Convert studentList to StudentDto
+        List<StudentDto> studentDtoList = studentService.convertStudentlistToStudentDtoList(studentList);
+
+        // Build the final InstructorDetailedDto
+        InstructorDetailedDto instructorDetailedDto = new InstructorDetailedDto(
+                instructorDto,
+                instructor.getQualificationList().stream()
+                        .map(qualification -> qualification.getQualificationName()).toList(),
+                instructor.getSubjectList().stream()
+                        .map(subject -> subject.getSubjectName()).toList(),
+                courseDtoList,
+                studentDtoList
+        );
+
+        return instructorDetailedDto;
     }
 
     public List<Instructor> getAllInstructor() {
@@ -274,7 +358,7 @@ public Instructor userToInstructor(User user ,InstructorCreateRequest instructor
         Coaching coaching=coachingService.findCoachingByCoachingId(coachingId);
         List<Instructor> instructorList=coaching.getInstructorList();
       //  List<InstructorDto> instructorDtoList=instructorList.stream().map(instructor -> new InstructorDto(instructor.getInstructorId(),instructor.getInstructorName(),instructor.getInstructorInfo().getInstructorInfoDetails())).toList();
-      List<InstructorDto>instructorDtoList= instructorList.stream().map(instructor -> new InstructorDto(instructor.getInstructorId(),instructor.getInstructorName(),instructor.getInstructorInfo().getInstructorInfoDetails(),instructor.getQualificationList().stream().map(Qualification::getQualificationName).toList(),instructor.getSubjectList().stream().map(Subject::getSubjectName).toList(),instructor.getCourseList().stream().map(Course::getCourseName).toList())).toList();
+      List<InstructorDto>instructorDtoList= instructorList.stream().map(instructor -> new InstructorDto(instructor.getInstructorId(),instructor.getInstructorName(),instructor.getEmail(),instructor.getInstructorInfo().getInstructorInfoDetails())).toList();
         return instructorDtoList;
     }
     public Instructor getInstructorByEmail(String email){
