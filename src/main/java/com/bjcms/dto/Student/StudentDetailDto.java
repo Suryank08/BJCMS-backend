@@ -1,7 +1,7 @@
 package com.bjcms.dto.Student;
 import java.util.List;
 
-public class StudentDto {
+public class StudentDetailDto {
     private Integer studentId;
     private String studentName;
     private String email;
@@ -10,7 +10,7 @@ public class StudentDto {
     private List<String> enrolledCourseList;
     private List<String> batchDetails;
 
-    public StudentDto(Integer studentId, String studentName, String email, String mobileNumber, List<String> instructorName, List<String> enrolledCourseList, List<String> batchDetails) {
+    public StudentDetailDto(Integer studentId, String studentName, String email, String mobileNumber, List<String> instructorName, List<String> enrolledCourseList, List<String> batchDetails) {
         this.studentId = studentId;
         this.studentName = studentName;
         this.email = email;

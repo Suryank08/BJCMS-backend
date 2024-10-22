@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import java.util.Date;
 import java.util.List;
 
-public class UserCoursesDto {
+public class CourseDetailedDto {
 
     private Integer courseId;
 
@@ -31,7 +31,7 @@ public class UserCoursesDto {
     private OfflineCourseDto offlineCourse;
     private OnlineCourseDto onlineCourse;
 
-    public UserCoursesDto(Integer courseId, String courseImage, String courseName, String courseDuration, String courseCost, String courseDescription, Date startDate, Date endDate, String courseTypeName, List<InstructorDto> instructorList, OfflineCourseDto offlineCourse, OnlineCourseDto onlineCourse) {
+    public CourseDetailedDto(Integer courseId, String courseImage, String courseName, String courseDuration, String courseCost, String courseDescription, Date startDate, Date endDate, String courseTypeName, List<InstructorDto> instructorList, OfflineCourseDto offlineCourse, OnlineCourseDto onlineCourse) {
         this.courseId = courseId;
         this.courseImage = courseImage;
         this.courseName = courseName;
@@ -46,7 +46,7 @@ public class UserCoursesDto {
         this.onlineCourse = onlineCourse;
     }
 
-    public UserCoursesDto() {
+    public CourseDetailedDto() {
     }
 
     public Integer getCourseId() {

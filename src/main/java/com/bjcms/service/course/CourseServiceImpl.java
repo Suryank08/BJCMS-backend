@@ -13,6 +13,8 @@ import com.bjcms.dao.user.RoleDao;
 import com.bjcms.dao.user.UserDao;
 import com.bjcms.dto.coaching.CoachingDto;
 import com.bjcms.dto.course.CourseDto;
+import com.bjcms.dto.course.CourseSummaryDto;
+import com.bjcms.dto.course.CourseUtil;
 import com.bjcms.dto.course.SubjectDto;
 import com.bjcms.entity.coaching.Coaching;
 import com.bjcms.entity.course.Course;
@@ -200,7 +202,11 @@ public class CourseServiceImpl implements CourseService {
         return courseList;
     }
 
-
+    public List<CourseSummaryDto> getAllCoursesSummaryByCoachingId(Integer coachingId){
+        List<Course> courseList=getAllCourseByCoachingId(coachingId);
+        List<CourseSummaryDto> courseSummaryDtoList= CourseUtil.parseCourseSummaryDto(courseList);
+        return courseSummaryDtoList;
+    }
     public Course findCourse(int id) {
         Optional<Course> optionalCourse = courseDao.findById(id);
         Course course = optionalCourse.orElse(new Course());
@@ -211,7 +217,7 @@ public class CourseServiceImpl implements CourseService {
         return courseDao.findById(id);
     }
 
-
+    @Transactional
     public Course enrollStudentInCourse(Integer courseId, String email, Integer batchId) {
 
         try {
@@ -228,12 +234,12 @@ public class CourseServiceImpl implements CourseService {
                             "ADMIN".equals(role.getRoleName()) ||
                             "CO-ADMIN".equals(role.getRoleName())||
                             "INSTRUCTOR".equals(role.getRoleName()))) {
-                student = new Student();
-                student.setFirstName(user.getFirstName());
-                student.setLastName(user.getLastName());
-                student.setMobileNumber(user.getMobileNumber());
-                student.setEmail(user.getEmail());
-                studentDao.save(student);
+                Student newStudent = new Student();
+                newStudent.setFirstName(user.getFirstName());
+                newStudent.setLastName(user.getLastName());
+                newStudent.setMobileNumber(user.getMobileNumber());
+                newStudent.setEmail(user.getEmail());
+               student= studentDao.save(newStudent);
                 user.getRoles().add(studentRole);
                 userDao.save(user);
             } else if (user.getRoles().stream().anyMatch(role -> "STUDENT".equals(role.getRoleName()))) {
@@ -242,6 +248,10 @@ public class CourseServiceImpl implements CourseService {
             } else {
                 throw new IllegalStateException("User does not have the required role.");
             }
+            Coaching coaching= course.getCoaching();
+            List<Coaching> coachingList=new ArrayList<>();
+            coachingList.add(coaching);
+            student.setCoachingList(coachingList);
 
             String courseType = course.getCourseType().getCourseTypeName();
             if ("offline".equals(courseType)) {
@@ -251,14 +261,8 @@ public class CourseServiceImpl implements CourseService {
                     student.getBatchList().add(batch);
                     studentDao.save(student);
                 } else {
-                    // Handle the case where the student is already enrolled
-                    System.out.println("Student is already enrolled in this batch.");
+                 throw  new IllegalArgumentException("Student is already enrolled in this batch.");
                 }
-//                batch.getStudentList().add(student);
-//                Batch savedBatch= batchDao.save(batch);
-//                student.getBatchList().add(batch);
-//                studentDao.save(student);
-//           course.getOfflineCourse().getBatchList().forEach(batch -> batch.getStudentList().add(student));
             } else if ("online".equals(courseType)) {
                 if (!student.getOnlineCourseList().contains(course.getOnlineCourse())) {
                     student.getOnlineCourseList().add(course.getOnlineCourse());
@@ -324,6 +328,7 @@ public class CourseServiceImpl implements CourseService {
                   courseStatus=course.getOfflineCourse().getStatus();
                   subjectDtoList.addAll(course.getOfflineCourse().getSubjectList().stream().map(subject -> new SubjectDto(subject.getSubjectId(),subject.getSubjectName())).toList());
               }else if(courseTypeName.equals("online")){
+                  courseStatus=course.getOnlineCourse().getStatus();
                   subjectDtoList.addAll(course.getOnlineCourse().getSubjectList().stream().map(subject -> new SubjectDto(subject.getSubjectId(),subject.getSubjectName())).toList());
               }
             return new CourseDto(courseId,courseImage,courseName,courseDuration,courseCost,courseDescription,startDate,endDate,courseTypeName,courseStatus,subjectDtoList);

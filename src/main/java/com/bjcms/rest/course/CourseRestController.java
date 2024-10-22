@@ -1,8 +1,7 @@
 package com.bjcms.rest.course;
 
-import com.bjcms.dto.course.CourseDto;
-import com.bjcms.dto.course.CourseUtil;
-import com.bjcms.dto.course.UserCoursesDto;
+import com.bjcms.dto.course.*;
+import com.bjcms.dto.instructor.InstructorDto;
 import com.bjcms.entity.course.Course;
 import com.bjcms.responses.CourseCreationRequest;
 import com.bjcms.responses.EnrollmentRequest;
@@ -16,7 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/courses")
@@ -29,31 +28,29 @@ public class CourseRestController {
         this.courseService = courseService;
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR','STUDENT','USER','CO-ADMIN')")
+   @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR','STUDENT','USER','CO-ADMIN')")
     @GetMapping("/getByCoachingId")
-    public ResponseEntity<List<UserCoursesDto>> getAllCourseByCoachingId(@RequestParam("coachingId") Integer coachingId){
-        List<Course> courseList = courseService.getAllCourseByCoachingId(coachingId);
-        List<UserCoursesDto> userCoursesDtoList = CourseUtil.parseCourseData(courseList);
-             if(!userCoursesDtoList.isEmpty()) {
-                 System.out.println("check This :" + userCoursesDtoList);
-             }
-       return ResponseEntity.ok(userCoursesDtoList);
-// return courseService.getAllCourse();
+    public ResponseEntity<List<CourseSummaryDto>> getAllCourseByCoachingId(@RequestParam("coachingId") Integer coachingId){
+        List<CourseSummaryDto> courseSummaryDtoList = courseService.getAllCoursesSummaryByCoachingId(coachingId);
+   return ResponseEntity.ok(courseSummaryDtoList);
+
     }
 
 
-    @GetMapping("/{courseId}")
+    @GetMapping("/getCourseById/{courseId}")
     @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR','STUDENT','USER')")
-    public Course getCourse(@PathVariable int courseId){
-        return courseService.findCourse(courseId);
-    }
+    public CourseDetailedDto getCourse(@PathVariable int courseId){
+       Course course= courseService.findCourse(courseId);
+        return CourseUtil.parseCourseData(course);}
 
     @GetMapping("/enrolledCourses")
     @PreAuthorize("hasAnyAuthority('ADMIN','INSTRUCTOR','STUDENT')")
-    public  List<Course> enrolledCourse(Principal principal){
+    public  ResponseEntity<List<CourseSummaryDto>> enrolledCourse(Principal principal){
         System.out.println("conntroller enrolled Courses");
         String userName=principal.getName();
-        return courseService.enrolledCourses(userName);
+        List<Course> coureList=courseService.enrolledCourses(userName);
+        List<CourseSummaryDto> courseSummaryDtoList= CourseUtil.parseCourseSummaryDto(coureList);
+        return ResponseEntity.ok(courseSummaryDtoList);
     }
 
     @GetMapping("/instructorCourses")
@@ -76,13 +73,21 @@ public class CourseRestController {
 
     //TODO Protect this method
     @PostMapping("/enrollStudent")
-    public Course enrollStudentInCourse(@RequestBody EnrollmentRequest enrollmentData ){
-        System.out.println("conntroller metholdsdjcbj");
+    public ResponseEntity<Map<String, String>> enrollStudentInCourse(@RequestBody EnrollmentRequest enrollmentData) {
+        System.out.println("Controller method triggered");
         Integer courseId = enrollmentData.getCourseId();
-        String email= enrollmentData.getEmail();
-        Integer batchId=enrollmentData.getBatchId();
-        return courseService.enrollStudentInCourse(courseId,email,batchId);
+        String email = enrollmentData.getEmail();
+        Integer batchId = enrollmentData.getBatchId();
+
+        Course course = courseService.enrollStudentInCourse(courseId, email, batchId);
+
+        // Create a JSON response as a map
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Student Enrolled in Course Successfully");
+
+        return ResponseEntity.ok(response); // Return JSON response
     }
+
 
 
     @PostMapping("/update")

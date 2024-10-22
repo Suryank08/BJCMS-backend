@@ -2,9 +2,13 @@ package com.bjcms.service.course;
 
 
 import com.bjcms.dto.course.CourseDto;
+import com.bjcms.dto.course.CourseSummaryDto;
+import com.bjcms.dto.course.SubjectDto;
 import com.bjcms.entity.course.Course;
 import com.bjcms.responses.CourseCreationRequest;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,4 +26,5 @@ public interface CourseService {
     public Course enrollStudentInCourse(Integer courseId, String email, Integer batchId);
     public List<Course>enrolledCourses(String userName);
     public List<CourseDto>instructorCourses(String userName);
+    public List<CourseSummaryDto> getAllCoursesSummaryByCoachingId(Integer coachingId);
 }

@@ -5,7 +5,7 @@ import com.bjcms.config.authentication.RandomPasswordGenerator;
 import com.bjcms.dao.instructor.InstructorDao;
 import com.bjcms.dao.user.RoleDao;
 import com.bjcms.dao.user.UserDao;
-import com.bjcms.dto.Student.StudentDto;
+import com.bjcms.dto.Student.StudentDetailDto;
 import com.bjcms.dto.coaching.CoachingDto;
 import com.bjcms.dto.course.CourseDto;
 import com.bjcms.dto.course.SubjectDto;
@@ -327,8 +327,8 @@ public Instructor userToInstructor(User user ,InstructorCreateRequest instructor
             );
         }).toList();
 
-        // Convert studentList to StudentDto
-        List<StudentDto> studentDtoList = studentService.convertStudentlistToStudentDtoList(studentList);
+        // Convert studentList to StudentDetailDto
+        List<StudentDetailDto> studentDtoList = studentService.convertStudentlistToStudentDtoList(studentList);
 
         // Build the final InstructorDetailedDto
         InstructorDetailedDto instructorDetailedDto = new InstructorDetailedDto(

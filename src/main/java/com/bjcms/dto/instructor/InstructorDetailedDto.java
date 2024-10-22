@@ -1,6 +1,6 @@
 package com.bjcms.dto.instructor;
 
-import com.bjcms.dto.Student.StudentDto;
+import com.bjcms.dto.Student.StudentDetailDto;
 import com.bjcms.dto.course.CourseDto;
 
 import java.util.List;
@@ -10,9 +10,9 @@ public class InstructorDetailedDto {
     private List<String> qualificationList;
     private List<String> subjectList;
     private List<CourseDto> courseDtoList;
-    private List<StudentDto> studentDtoList;
+    private List<StudentDetailDto> studentDtoList;
 
-    public InstructorDetailedDto(InstructorDto instructorDto, List<String> qualificationList, List<String> subjectList, List<CourseDto> courseDtoList, List<StudentDto> studentDtoList) {
+    public InstructorDetailedDto(InstructorDto instructorDto, List<String> qualificationList, List<String> subjectList, List<CourseDto> courseDtoList, List<StudentDetailDto> studentDtoList) {
         this.instructorDto = instructorDto;
         this.qualificationList = qualificationList;
         this.subjectList = subjectList;
@@ -52,11 +52,11 @@ public class InstructorDetailedDto {
         this.courseDtoList = courseDtoList;
     }
 
-    public List<StudentDto> getStudentDtoList() {
+    public List<StudentDetailDto> getStudentDtoList() {
         return studentDtoList;
     }
 
-    public void setStudentDtoList(List<StudentDto> studentDtoList) {
+    public void setStudentDtoList(List<StudentDetailDto> studentDtoList) {
         this.studentDtoList = studentDtoList;
     }
 }

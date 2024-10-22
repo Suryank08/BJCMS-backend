@@ -1,6 +1,7 @@
 package com.bjcms.rest.student;
 
-import com.bjcms.dto.Student.StudentDto;
+import com.bjcms.dto.Student.StudentDetailDto;
+import com.bjcms.dto.Student.StudentSummaryDto;
 import com.bjcms.entity.student.Student;
 import com.bjcms.service.student.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,19 +27,25 @@ public class StudentRestController  {
         return studentService.getAllStudent();
     }
 
-    @GetMapping("/{studentId}")
-    @PreAuthorize("hasAnyAuthority('ADMIN' ,'INSTRUCTOR','STUDENT')")
-    public Student getStudent(@PathVariable int studentId){
-        return studentService.findStudent(studentId);
+    @PostMapping("/{studentId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN' ,'INSTRUCTOR','STUDENT','CO-ADMIN')")
+    public ResponseEntity<StudentDetailDto> getStudentDetailByCoachingId(@PathVariable int studentId, @RequestBody Integer coachingId){
+        StudentDetailDto studentDetailDto =studentService.findStudentDetailsByCoachingId(studentId,coachingId);
+        if(studentDetailDto !=null) {
+            return ResponseEntity.ok(studentDetailDto);
+        }
+       else {
+            return ResponseEntity.noContent().build();  // Return 204 if no instructors found
+        }
     }
 
     @GetMapping("/coachingStudents")
     @PreAuthorize("hasAnyAuthority('ADMIN','CO-ADMIN')")
-    public ResponseEntity<List<StudentDto>> getStudentsByCoachingId(@RequestParam Integer coachingId) {
+    public ResponseEntity<List<StudentSummaryDto>> getStudentsByCoachingId(@RequestParam Integer coachingId) {
         // Log coachingId for debugging
         System.out.println("coachingId: " + coachingId);
 
-        List<StudentDto> studentList = studentService.getStudentsByCoachingId(coachingId);
+        List<StudentSummaryDto> studentList = studentService.getStudentsByCoachingId(coachingId);
         if (studentList != null && !studentList.isEmpty()) {
             return ResponseEntity.ok(studentList);
         } else {
@@ -52,8 +59,8 @@ public class StudentRestController  {
     }
 
     @PostMapping("/courseEnrolledStudent")
-    public ResponseEntity<List<StudentDto>> courseEnrolledStudent(@RequestBody Integer courseId){
-        List<StudentDto> studentDtoList= studentService.courseEnrolledStudent(courseId);
+    public ResponseEntity<List<StudentSummaryDto>> courseEnrolledStudent(@RequestBody Integer courseId){
+        List<StudentSummaryDto> studentDtoList= studentService.courseEnrolledStudent(courseId);
 
         if(studentDtoList!=null && !studentDtoList.isEmpty()) {
             return ResponseEntity.ok(studentDtoList);
