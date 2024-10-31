@@ -1,5 +1,7 @@
 package com.bjcms.service.course.offline;
 
+import com.bjcms.responses.AttendanceRequest;
+
 public interface OfflineCourseAttendanceService {
-    void addAttendance();
+   public void addAttendance(AttendanceRequest attendanceRequest);
 }

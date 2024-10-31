@@ -95,7 +95,7 @@ public class InstructorServiceImpl implements InstructorService {
                        lName = nameArr[1];
                    }
                    String mobileNum=instructorCreateRequest.getMobileNumber();
-                   String randomPassword= RandomPasswordGenerator.generatePassword(10,fName,mobileNum,email);
+                   String randomPassword= RandomPasswordGenerator.generatePassword(fName,mobileNum,email);
                    System.out.println(randomPassword);
                    User user=new User(fName,lName,email,mobileNum,randomPassword);
                    User savedUser=userService.addUser(user);

@@ -5,7 +5,6 @@ import com.bjcms.dao.course.online.OnlineCourseAttendenceDao;
 import com.bjcms.entity.course.AttendanceDateEntry;
 import com.bjcms.entity.course.Course;
 import com.bjcms.entity.course.online.OnlineCourseAttendance;
-import com.bjcms.entity.instructor.Instructor;
 import com.bjcms.entity.student.Student;
 import com.bjcms.responses.AttendanceRequest;
 import com.bjcms.service.Email.EmailSenderService;
@@ -18,12 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class OnlineCourseAttendenceServiceImpl implements OnlineCourseAttendenceService {
@@ -43,56 +39,7 @@ public class OnlineCourseAttendenceServiceImpl implements OnlineCourseAttendence
         this.emailSenderService=emailSenderService;
     }
 
-//    @Transactional
-//    public void addAttendence(AttendanceRequest attendenceRequest) {
-//        Integer courseId = attendenceRequest.getCourseId();
-//        Integer subjectId = attendenceRequest.getSubjectId();
-//        Integer onlineCourseId = courseService.findCourse(courseId).getOnlineCourse().getOnlineCourseId();
-//        log.info("OnlineCourseId value:", onlineCourseId);
-//        log.info("Searching for attendance on: {}", LocalDate.now());
-//
-//        OnlineCourseAttendance savedOnlineCourseAttendance = null;
-////        AttendanceDateEntry savedAttendanceDate = null;
-//        System.out.println(LocalDate.now());
-////        Optional<AttendanceDateEntry> attendanceDateOptional = attendanceDateDao.findByDate(LocalDate.now());
-////        if (attendanceDateOptional.isPresent()) {
-////            System.out.println("hdsjgcjhisadguhlfg");
-////            savedAttendanceDate = attendanceDateOptional.get();
-////        } else {
-////            AttendanceDateEntry attendanceDateEntry = new AttendanceDateEntry(LocalDate.now());
-////            savedAttendanceDate = attendanceDateDao.save(attendanceDateEntry);
-////        }
-//        AttendanceDateEntry savedAttendanceDate = attendanceDateDao.findByDate(LocalDate.now())
-//                .orElseGet(() -> {
-//                    AttendanceDateEntry newAttendanceDateEntry = new AttendanceDateEntry(LocalDate.now());
-//                    return attendanceDateDao.save(newAttendanceDateEntry);
-//                });
-//
-//        List<AttendanceDateEntry> attendanceDateEntryList = new ArrayList<>();
-//        attendanceDateEntryList.add(savedAttendanceDate);
-//        for (Integer studentId : attendenceRequest.getPresentIds()) {
-//            Optional<OnlineCourseAttendance> onlineCourseAttendenceOptional = onlineCourseAttendenceDao.findOnlineCourseAttendence(onlineCourseId, subjectId, studentId);
-//            if (onlineCourseAttendenceOptional.isPresent()) {
-//                onlineCourseAttendenceOptional.get().setAttendenceCount(onlineCourseAttendenceOptional.get().getAttendenceCount() + 1);
-//                savedOnlineCourseAttendance = onlineCourseAttendenceDao.save(onlineCourseAttendenceOptional.get());
-//            } else {
-//                OnlineCourseAttendance onlineCourseAttendance = new OnlineCourseAttendance();
-//                onlineCourseAttendance.setOnlineCourseId(onlineCourseId);
-//                onlineCourseAttendance.setSubjectId(subjectId);
-//                onlineCourseAttendance.setStudentId(studentId);
-//                onlineCourseAttendance.setAttendenceCount(1);
-//                savedOnlineCourseAttendance = onlineCourseAttendenceDao.save(onlineCourseAttendance);
-//            }
-//            System.out.println(savedOnlineCourseAttendance.toString());
-//            if (savedOnlineCourseAttendance != null) {
-//                if (savedOnlineCourseAttendance.getAttendanceDateList() != null)
-//                    attendanceDateEntryList.addAll(savedOnlineCourseAttendance.getAttendanceDateList());
-//                savedOnlineCourseAttendance.setAttendanceDateList(attendanceDateEntryList);
-//                onlineCourseAttendenceDao.save(savedOnlineCourseAttendance);
-//            }
-//        }
-//
-//    }
+
 @Transactional
 public void addAttendence(AttendanceRequest attendenceRequest) {
     Integer courseId = attendenceRequest.getCourseId();
@@ -123,24 +70,7 @@ public void addAttendence(AttendanceRequest attendenceRequest) {
                 throw new IllegalArgumentException("Student not found with studentId: " + studentId);
             }
           String email=  student.getEmail();
-          String subject= "Regarding Absent in Course of ".concat(course.getCourseName());
-            StringBuffer sb = new StringBuffer();
-            sb.append(student.getFirstName());
-            sb.append(" ");
-            sb.append(student.getLastName());
-            sb.append(" is Absent on ");
-            sb.append(LocalDate.now(ZoneId.of("Asia/Kolkata")).toString());
-            sb.append(" in Course on ");
-            sb.append(course.getCourseName());
-            sb.append(System.lineSeparator());
-            sb.append("By:- ");
-            sb.append(course.getInstructorList().stream()
-                    .map(Instructor::getInstructorName)
-                    .filter(Objects::nonNull)  // Optional: to handle null values
-                    .collect(Collectors.joining(", ")));
-
-            String body = sb.toString();
-            emailSenderService.sendEmail(email,subject,body);
+        emailSenderService.absentStudentEmail(email,course,student,null );
         }
 
 

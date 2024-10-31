@@ -19,6 +19,7 @@ public class CourseDto {
     private String courseTypeName;
     private String courseStatus;
     private List<SubjectDto> subjectList;
+    private List<BatchDto> batchDtoList;
 
     public CourseDto(Integer courseId, String courseImage, String courseName, String courseDuration, String courseCost, String courseDescription, Date startDate, Date endDate, String courseTypeName, String courseStatus, List<SubjectDto> subjectList) {
         this.courseId = courseId;
@@ -32,6 +33,21 @@ public class CourseDto {
         this.courseTypeName = courseTypeName;
         this.courseStatus = courseStatus;
         this.subjectList = subjectList;
+    }
+
+    public CourseDto(Integer courseId, String courseImage, String courseName, String courseDuration, String courseCost, String courseDescription, Date startDate, Date endDate, String courseTypeName, String courseStatus, List<SubjectDto> subjectList, List<BatchDto> batchDtoList) {
+        this.courseId = courseId;
+        this.courseImage = courseImage;
+        this.courseName = courseName;
+        this.courseDuration = courseDuration;
+        this.courseCost = courseCost;
+        this.courseDescription = courseDescription;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.courseTypeName = courseTypeName;
+        this.courseStatus = courseStatus;
+        this.subjectList = subjectList;
+        this.batchDtoList = batchDtoList;
     }
 
     public Integer getCourseId() {
@@ -120,5 +136,13 @@ public class CourseDto {
 
     public void setSubjectList(List<SubjectDto> subjectList) {
         this.subjectList = subjectList;
+    }
+
+    public List<BatchDto> getBatchDtoList() {
+        return batchDtoList;
+    }
+
+    public void setBatchDtoList(List<BatchDto> batchDtoList) {
+        this.batchDtoList = batchDtoList;
     }
 }

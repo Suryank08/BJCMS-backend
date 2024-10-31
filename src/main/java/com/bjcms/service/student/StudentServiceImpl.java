@@ -184,7 +184,8 @@ public class StudentServiceImpl implements StudentService {
                         student.getStudentId(),
                         fullName,
                         student.getEmail(),
-                        student.getMobileNumber()
+                        student.getMobileNumber(),
+                        student.getBatchList().stream().map(Batch::getBatchId).toList()
                 );
             }).toList();
 

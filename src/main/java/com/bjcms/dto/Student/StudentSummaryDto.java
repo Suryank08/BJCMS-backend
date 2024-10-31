@@ -7,12 +7,21 @@ public class StudentSummaryDto {
     private String studentName;
     private String email;
     private String mobileNumber;
+    private List<Integer> batchIdList;
 
     public StudentSummaryDto(Integer studentId, String studentName, String email, String mobileNumber) {
         this.studentId = studentId;
         this.studentName = studentName;
         this.email = email;
         this.mobileNumber = mobileNumber;
+    }
+
+    public StudentSummaryDto(Integer studentId, String studentName, String email, String mobileNumber, List<Integer> batchIdList) {
+        this.studentId = studentId;
+        this.studentName = studentName;
+        this.email = email;
+        this.mobileNumber = mobileNumber;
+        this.batchIdList = batchIdList;
     }
 
     public Integer getStudentId() {
@@ -45,5 +54,13 @@ public class StudentSummaryDto {
 
     public void setMobileNumber(String mobileNumber) {
         this.mobileNumber = mobileNumber;
+    }
+
+    public List<Integer> getBatchIdList() {
+        return batchIdList;
+    }
+
+    public void setBatchIdList(List<Integer> batchIdList) {
+        this.batchIdList = batchIdList;
     }
 }

@@ -44,7 +44,7 @@ public class AttendanceController {
 
                         try {
                             if ("offline".equalsIgnoreCase(course.getCourseType().getCourseTypeName())) {
-                                offlineCourseAttendanceService.addAttendance();
+                                offlineCourseAttendanceService.addAttendance(attendanceRequest);
                                 return new ResponseEntity<>("Offline attendance added successfully", HttpStatus.OK);
                             } else if ("online".equalsIgnoreCase(course.getCourseType().getCourseTypeName())) {
                                 onlineCourseAttendenceService.addAttendence(attendanceRequest);

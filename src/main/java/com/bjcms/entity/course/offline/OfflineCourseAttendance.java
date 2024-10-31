@@ -1,9 +1,13 @@
 package com.bjcms.entity.course.offline;
 
+import com.bjcms.entity.course.AttendanceDateEntry;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
-@Table(name = "online_course_attendance_record")
+@Table(name = "offline_course_attendance_record")
 public class OfflineCourseAttendance {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,16 +25,21 @@ public class OfflineCourseAttendance {
     @Column(name = "attendance_count")
     private Integer attendanceCount;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "date_offline_course_attendance",joinColumns = @JoinColumn(name = "attendance_id"),inverseJoinColumns = @JoinColumn(name = "date_id"))
+    private List<AttendanceDateEntry> attendanceDateEntryList =new ArrayList<>();
+
     public OfflineCourseAttendance() {
     }
 
-    public OfflineCourseAttendance(Integer attendanceId, Integer courseId, Integer batchId, Integer subjectId, Integer studentId, Integer attendanceCount) {
+    public OfflineCourseAttendance(Integer attendanceId, Integer courseId, Integer batchId, Integer subjectId, Integer studentId, Integer attendanceCount, List<AttendanceDateEntry> attendanceDateEntryList) {
         this.attendanceId = attendanceId;
         this.courseId = courseId;
         this.batchId = batchId;
         this.subjectId = subjectId;
         this.studentId = studentId;
         this.attendanceCount = attendanceCount;
+        this.attendanceDateEntryList = attendanceDateEntryList;
     }
 
     public Integer getAttendanceId() {
@@ -79,5 +88,13 @@ public class OfflineCourseAttendance {
 
     public void setAttendanceCount(Integer attendanceCount) {
         this.attendanceCount = attendanceCount;
+    }
+
+    public List<AttendanceDateEntry> getAttendanceDateList() {
+        return attendanceDateEntryList;
+    }
+
+    public void setAttendanceDateList(List<AttendanceDateEntry> attendanceDateEntryList) {
+        this.attendanceDateEntryList = attendanceDateEntryList;
     }
 }
