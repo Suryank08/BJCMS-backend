@@ -19,7 +19,8 @@ target/
 *.iws
 *.iml
 *.ipr
-
+###Image##
+db_img.png
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
