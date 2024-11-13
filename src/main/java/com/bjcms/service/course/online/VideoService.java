@@ -1,8 +1,8 @@
 package com.bjcms.service.course.online;
 
-import java.util.List;
-
 import com.bjcms.entity.course.online.Video;
+
+import java.util.List;
 
 public interface VideoService {
     List<Video> addVideos(List<Video> videoList);

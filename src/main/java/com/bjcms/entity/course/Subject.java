@@ -1,27 +1,15 @@
 package com.bjcms.entity.course;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.bjcms.entity.course.offline.OfflineCourse;
 import com.bjcms.entity.course.online.OnlineCourse;
 import com.bjcms.entity.course.online.Video;
 import com.bjcms.entity.instructor.Instructor;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import jakarta.persistence.*;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "subject")
@@ -39,14 +27,17 @@ public class Subject {
     private List<Instructor>instructorList=new ArrayList<>();
 
     @ManyToMany(cascade ={CascadeType.PERSIST,CascadeType.MERGE},fetch = FetchType.LAZY)
+//    @JsonBackReference
     @JoinTable(name="online_course_subject",joinColumns = @JoinColumn(name = "subject_id"),inverseJoinColumns = @JoinColumn(name = "online_course_id"))
     private List<OnlineCourse> onlineCourseList=new ArrayList<>();
 
     @ManyToMany(cascade ={CascadeType.PERSIST,CascadeType.MERGE},fetch = FetchType.LAZY)
     @JoinTable(name="offline_course_subject",joinColumns = @JoinColumn(name = "subject_id"),inverseJoinColumns = @JoinColumn(name = "course_id"))
+//    @JsonBackReference
     private List<OfflineCourse> offlineCourseList =new ArrayList<>();
 
     @OneToMany(mappedBy = "subject",cascade ={CascadeType.PERSIST,CascadeType.MERGE},fetch = FetchType.LAZY)
+//    @JsonBackReference
     private List<Video> videoList=new ArrayList<>();
 
 

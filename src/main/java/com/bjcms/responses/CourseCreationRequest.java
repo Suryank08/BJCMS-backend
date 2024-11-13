@@ -1,38 +1,30 @@
-package com.bjcms.dto.course;
+package com.bjcms.responses;
 
-import com.bjcms.dto.instructor.InstructorDto;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.bjcms.entity.course.CourseType;
+import com.bjcms.entity.course.offline.OfflineCourse;
+import com.bjcms.entity.course.online.OnlineCourse;
+import com.bjcms.entity.instructor.Instructor;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class UserCoursesDto {
-
-    private Integer courseId;
-
+public class CourseCreationRequest {
+    private String coachingId;
     private String courseImage;
-
     private String courseName;
-
     private String courseDuration;
-
     private String courseCost;
-
     private String courseDescription;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date startDate;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     private Date endDate;
+    private CourseType courseType;
+    private OnlineCourse onlineCourse;
+    private OfflineCourse offlineCourse;
+    private List<Instructor> instructorList = new ArrayList<>();
 
-    private String courseTypeName;
-
-    private List<InstructorDto> instructorList;
-
-    private OfflineCourseDto offlineCourse;
-    private OnlineCourseDto onlineCourse;
-
-    public UserCoursesDto(Integer courseId, String courseImage, String courseName, String courseDuration, String courseCost, String courseDescription, Date startDate, Date endDate, String courseTypeName, List<InstructorDto> instructorList, OfflineCourseDto offlineCourse, OnlineCourseDto onlineCourse) {
-        this.courseId = courseId;
+    public CourseCreationRequest(String coachingId, String courseImage, String courseName, String courseDuration, String courseCost, String courseDescription, Date startDate, Date endDate, CourseType courseType, OnlineCourse onlineCourse, OfflineCourse offlineCourse, List<Instructor> instructorList) {
+        this.coachingId = coachingId;
         this.courseImage = courseImage;
         this.courseName = courseName;
         this.courseDuration = courseDuration;
@@ -40,21 +32,18 @@ public class UserCoursesDto {
         this.courseDescription = courseDescription;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.courseTypeName = courseTypeName;
-        this.instructorList = instructorList;
-        this.offlineCourse = offlineCourse;
+        this.courseType = courseType;
         this.onlineCourse = onlineCourse;
+        this.offlineCourse = offlineCourse;
+        this.instructorList = instructorList;
     }
 
-    public UserCoursesDto() {
+    public String getCoachingId() {
+        return coachingId;
     }
 
-    public Integer getCourseId() {
-        return courseId;
-    }
-
-    public void setCourseId(Integer courseId) {
-        this.courseId = courseId;
+    public void setCoachingId(String coachingId) {
+        this.coachingId = coachingId;
     }
 
     public String getCourseImage() {
@@ -113,35 +102,35 @@ public class UserCoursesDto {
         this.endDate = endDate;
     }
 
-    public String getCourseTypeName() {
-        return courseTypeName;
+    public CourseType getCourseType() {
+        return courseType;
     }
 
-    public void setCourseTypeName(String courseTypeName) {
-        this.courseTypeName = courseTypeName;
+    public void setCourseType(CourseType courseType) {
+        this.courseType = courseType;
     }
 
-    public List<InstructorDto> getInstructorList() {
-        return instructorList;
-    }
-
-    public void setInstructorList(List<InstructorDto> instructorList) {
-        this.instructorList = instructorList;
-    }
-
-    public OfflineCourseDto getOfflineCourse() {
-        return offlineCourse;
-    }
-
-    public void setOfflineCourse(OfflineCourseDto offlineCourse) {
-        this.offlineCourse = offlineCourse;
-    }
-
-    public OnlineCourseDto getOnlineCourse() {
+    public OnlineCourse getOnlineCourse() {
         return onlineCourse;
     }
 
-    public void setOnlineCourse(OnlineCourseDto onlineCourse) {
+    public void setOnlineCourse(OnlineCourse onlineCourse) {
         this.onlineCourse = onlineCourse;
+    }
+
+    public OfflineCourse getOfflineCourse() {
+        return offlineCourse;
+    }
+
+    public void setOfflineCourse(OfflineCourse offlineCourse) {
+        this.offlineCourse = offlineCourse;
+    }
+
+    public List<Instructor> getInstructorList() {
+        return instructorList;
+    }
+
+    public void setInstructorList(List<Instructor> instructorList) {
+        this.instructorList = instructorList;
     }
 }

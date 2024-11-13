@@ -1,27 +1,19 @@
 package com.bjcms.rest.student;
 
-import java.security.Principal;
-import java.util.List;
-
-import com.bjcms.entity.course.Course;
-import com.bjcms.responses.EnrollmentRequest;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.bjcms.dto.Student.StudentDetailDto;
+import com.bjcms.dto.Student.StudentSummaryDto;
 import com.bjcms.entity.student.Student;
 import com.bjcms.service.student.StudentService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/students")
-public class StudentRestController {
+public class StudentRestController  {
   private StudentService studentService;
 
     @Autowired
@@ -35,13 +27,31 @@ public class StudentRestController {
         return studentService.getAllStudent();
     }
 
-    @GetMapping("/{studentId}")
-    @PreAuthorize("hasAnyAuthority('ADMIN' ,'INSTRUCTOR','STUDENT')")
-    public Student getStudent(@PathVariable int studentId){
-        return studentService.findStudent(studentId);
+    @PostMapping("/{studentId}")
+    @PreAuthorize("hasAnyAuthority('ADMIN' ,'INSTRUCTOR','STUDENT','CO-ADMIN')")
+    public ResponseEntity<StudentDetailDto> getStudentDetailByCoachingId(@PathVariable int studentId, @RequestBody Integer coachingId){
+        StudentDetailDto studentDetailDto =studentService.findStudentDetailsByCoachingId(studentId,coachingId);
+        if(studentDetailDto !=null) {
+            return ResponseEntity.ok(studentDetailDto);
+        }
+       else {
+            return ResponseEntity.noContent().build();  // Return 204 if no instructors found
+        }
     }
 
+    @GetMapping("/coachingStudents")
+    @PreAuthorize("hasAnyAuthority('ADMIN','CO-ADMIN')")
+    public ResponseEntity<List<StudentSummaryDto>> getStudentsByCoachingId(@RequestParam Integer coachingId) {
+        // Log coachingId for debugging
+        System.out.println("coachingId: " + coachingId);
 
+        List<StudentSummaryDto> studentList = studentService.getStudentsByCoachingId(coachingId);
+        if (studentList != null && !studentList.isEmpty()) {
+            return ResponseEntity.ok(studentList);
+        } else {
+            return ResponseEntity.noContent().build();  // Return 204 if no instructors found
+        }
+    }
     @PostMapping("/create")
     public List<Student> addStudent(@RequestBody List<Student> studentList){
         System.out.println("Added Student");
@@ -49,8 +59,15 @@ public class StudentRestController {
     }
 
     @PostMapping("/courseEnrolledStudent")
-    public List<Student> courseEnrolledStudent(@RequestBody Integer courseId){
-        return studentService.courseEnrolledStudent(courseId);
+    public ResponseEntity<List<StudentSummaryDto>> courseEnrolledStudent(@RequestBody Integer courseId){
+        List<StudentSummaryDto> studentDtoList= studentService.courseEnrolledStudent(courseId);
+
+        if(studentDtoList!=null && !studentDtoList.isEmpty()) {
+            return ResponseEntity.ok(studentDtoList);
+        }
+        else{
+            return ResponseEntity.noContent().build();
+        }
     }
 
     @DeleteMapping("/{studentId}")

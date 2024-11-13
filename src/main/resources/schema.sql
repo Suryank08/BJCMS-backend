@@ -2,11 +2,144 @@
 -- Please log an issue at https://github.com/pgadmin-org/pgadmin4/issues/new/choose if you find any bugs, including reproduction steps.
 BEGIN;
 
+CREATE SEQUENCE IF NOT EXISTS public.attendence_record_attendence_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+CREATE SEQUENCE IF NOT EXISTS public.batch_batch_id_seq
+    INCREMENT 3
+    START 103
+    MINVALUE 103
+    MAXVALUE 2147483647
+    CACHE 1;
+
+    CREATE SEQUENCE IF NOT EXISTS public.coaching_admin_coaching_admin_id_seq
+        INCREMENT 4
+        START 5341
+        MINVALUE 5341
+        MAXVALUE 2147483647
+        CACHE 1;
+
+        CREATE SEQUENCE IF NOT EXISTS public.coaching_coaching_id_seq
+            INCREMENT 4
+            START 5323
+            MINVALUE 5323
+            MAXVALUE 2147483647
+            CACHE 1;
+
+
+CREATE SEQUENCE IF NOT EXISTS public.comment_comment_id_seq
+    INCREMENT 2
+    START 2344
+    MINVALUE 2344
+    MAXVALUE 2147483647
+    CACHE 1;
+
+
+    CREATE SEQUENCE IF NOT EXISTS public.course_id_seq
+        INCREMENT 3
+        START 11210
+        MINVALUE 11210
+        MAXVALUE 2147483647
+        CACHE 1;
+
+
+
+CREATE SEQUENCE IF NOT EXISTS public.course_type_course_type_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+
+
+    CREATE SEQUENCE IF NOT EXISTS public.date_table_date_id_seq
+        INCREMENT 1
+        START 1
+        MINVALUE 1
+        MAXVALUE 2147483647
+        CACHE 1;
+
+
+        CREATE SEQUENCE IF NOT EXISTS public.instructor_id_seq
+            INCREMENT 7
+            START 12351
+            MINVALUE 12351
+            MAXVALUE 2147483647
+            CACHE 1;
+
+            CREATE SEQUENCE IF NOT EXISTS public.online_course_attendence_record_attendence_id_seq
+                INCREMENT 1
+                START 1
+                MINVALUE 1
+                MAXVALUE 2147483647
+                CACHE 1;
+
+CREATE SEQUENCE IF NOT EXISTS public.online_course_online_course_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+
+    CREATE SEQUENCE IF NOT EXISTS public.qualification_qualification_id_seq
+        INCREMENT 1
+        START 1
+        MINVALUE 1
+        MAXVALUE 2147483647
+        CACHE 1;
+
+
+
+CREATE SEQUENCE IF NOT EXISTS public.role_role_id_seq
+    INCREMENT 1
+    START 1
+    MINVALUE 1
+    MAXVALUE 2147483647
+    CACHE 1;
+
+
+    CREATE SEQUENCE IF NOT EXISTS public.student_student_id_seq
+        INCREMENT 6
+        START 13523
+        MINVALUE 13523
+        MAXVALUE 2147483647
+        CACHE 1;
+
+
+        CREATE SEQUENCE IF NOT EXISTS public.subject_subject_id_seq
+            INCREMENT 2
+            START 345
+            MINVALUE 345
+            MAXVALUE 2147483647
+            CACHE 1;
+
+
+CREATE SEQUENCE IF NOT EXISTS public.user_user_id_seq
+    INCREMENT 3
+    START 11204
+    MINVALUE 11204
+    MAXVALUE 2147483647
+    CACHE 1;
+
+
+    CREATE SEQUENCE IF NOT EXISTS public.video_video_id_seq
+        INCREMENT 3
+        START 1234
+        MINVALUE 1234
+        MAXVALUE 2147483647
+        CACHE 1;
+
 
 CREATE TABLE IF NOT EXISTS public.batch
 (
-    batch_id serial NOT NULL,
-    batch_name character varying(255) COLLATE pg_catalog."default" NOT NULL,
+  batch_id integer NOT NULL DEFAULT nextval('batch_batch_id_seq'::regclass),
+       batch_name character varying(255) COLLATE pg_catalog."default" NOT NULL,
     batch_time character varying(100) COLLATE pg_catalog."default",
     course_id integer,
     CONSTRAINT batch_pkey PRIMARY KEY (batch_id)
@@ -19,10 +152,44 @@ CREATE TABLE IF NOT EXISTS public.batch_student_enrollment
     CONSTRAINT batch_student_enrollment_pkey PRIMARY KEY (batch_id, student_id)
 );
 
+CREATE TABLE IF NOT EXISTS public.coaching
+(
+    coaching_id integer NOT NULL DEFAULT nextval('coaching_coaching_id_seq'::regclass),
+       coaching_name character varying(250) COLLATE pg_catalog."default",
+    coaching_address character varying(250) COLLATE pg_catalog."default",
+    coaching_vision character varying(700) COLLATE pg_catalog."default",
+    coaching_admin_id integer,
+    CONSTRAINT coaching_pkey PRIMARY KEY (coaching_id),
+    CONSTRAINT coaching_coaching_name_key UNIQUE (coaching_name)
+);
+
+CREATE TABLE IF NOT EXISTS public.coaching_admin
+(
+   coaching_admin_id integer NOT NULL DEFAULT nextval('coaching_admin_coaching_admin_id_seq'::regclass),
+       coaching_admin_name character varying(250) COLLATE pg_catalog."default" NOT NULL,
+    coaching_admin_email character varying(250) COLLATE pg_catalog."default" NOT NULL,
+    mob_num character varying(12) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT coaching_admin_pkey PRIMARY KEY (coaching_admin_id)
+);
+
+CREATE TABLE IF NOT EXISTS public.coaching_instructor
+(
+    coaching_id integer NOT NULL,
+    instructor_id integer NOT NULL,
+    CONSTRAINT coaching_instructor_id_pk PRIMARY KEY (coaching_id, instructor_id)
+);
+
+CREATE TABLE IF NOT EXISTS public.coaching_student
+(
+    coaching_id integer NOT NULL,
+    student_id integer NOT NULL,
+    CONSTRAINT coaching_student_id_pk PRIMARY KEY (coaching_id, student_id)
+);
+
 CREATE TABLE IF NOT EXISTS public.comment
 (
-    comment_id serial NOT NULL,
-    video_id integer,
+    comment_id integer NOT NULL DEFAULT nextval('comment_comment_id_seq'::regclass),
+        video_id integer,
     student_id integer,
     comment_text text COLLATE pg_catalog."default",
     time_stamp timestamp without time zone,
@@ -40,52 +207,46 @@ CREATE TABLE IF NOT EXISTS public.course
     start_date date,
     end_date date,
     course_image character varying(1000) COLLATE pg_catalog."default",
+    coaching_id integer,
     CONSTRAINT course_pkey PRIMARY KEY (course_id)
 );
 
 CREATE TABLE IF NOT EXISTS public.course_type
 (
-    course_type_id serial NOT NULL,
-    course_type_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    course_type_id integer NOT NULL DEFAULT nextval('course_type_course_type_id_seq'::regclass),
+       course_type_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT course_type_pkey PRIMARY KEY (course_type_id),
     CONSTRAINT course_type_course_type_name_key UNIQUE (course_type_name)
 );
 
-CREATE TABLE IF NOT EXISTS public.date_offline_course_attendence
+CREATE TABLE IF NOT EXISTS public.date_offline_course_attendance
 (
-    attendence_id integer NOT NULL,
+    attendance_id integer NOT NULL,
     date_id integer NOT NULL,
-    CONSTRAINT offline_attendence_date_pkey PRIMARY KEY (attendence_id, date_id)
+    CONSTRAINT offline_attendence_date_pkey PRIMARY KEY (attendance_id, date_id)
 );
 
-CREATE TABLE IF NOT EXISTS public.date_online_course_attendence
+CREATE TABLE IF NOT EXISTS public.date_online_course_attendance
 (
-    attendence_id integer NOT NULL,
+    attendance_id integer NOT NULL,
     date_id integer NOT NULL,
-    CONSTRAINT online_attendence_date_pkey PRIMARY KEY (attendence_id, date_id)
+    CONSTRAINT online_attendence_date_pkey PRIMARY KEY (attendance_id, date_id)
 );
 
 CREATE TABLE IF NOT EXISTS public.date_table
 (
-    date_id serial NOT NULL,
-    attendence_date date,
+    date_id integer NOT NULL DEFAULT nextval('date_table_date_id_seq'::regclass),
+        attendance_date date,
     CONSTRAINT date_table_pkey PRIMARY KEY (date_id)
-);
-
-CREATE TABLE IF NOT EXISTS public.guardian
-(
-    id bigint NOT NULL,
-    first_name character varying(250) COLLATE pg_catalog."default",
-    last_name character varying(250) COLLATE pg_catalog."default",
-    mobile_number character varying(12) COLLATE pg_catalog."default",
-    CONSTRAINT guardian_details_pkey PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS public.instructor
 (
     instructor_id integer NOT NULL DEFAULT nextval('instructor_id_seq'::regclass),
     instructor_name character varying(255) COLLATE pg_catalog."default" NOT NULL,
-    CONSTRAINT instructor_pkey PRIMARY KEY (instructor_id)
+    email character varying(250) COLLATE pg_catalog."default" NOT NULL,
+    CONSTRAINT instructor_pkey PRIMARY KEY (instructor_id),
+    CONSTRAINT instructor_email_unique UNIQUE (email)
 );
 
 CREATE TABLE IF NOT EXISTS public.instructor_course
@@ -125,15 +286,15 @@ CREATE TABLE IF NOT EXISTS public.offline_course
     CONSTRAINT offline_course_pkey PRIMARY KEY (course_id)
 );
 
-CREATE TABLE IF NOT EXISTS public.offline_course_attendence_record
+CREATE TABLE IF NOT EXISTS public.offline_course_attendance_record
 (
-    attendence_id integer NOT NULL DEFAULT nextval('attendence_record_attendence_id_seq'::regclass),
+    attendance_id integer NOT NULL DEFAULT nextval('attendence_record_attendence_id_seq'::regclass),
     course_id integer NOT NULL,
     batch_id integer NOT NULL,
     subject_id integer NOT NULL,
     student_id integer NOT NULL,
-    attendence_count integer,
-    CONSTRAINT offline_course_attendence_record_pkey PRIMARY KEY (attendence_id)
+    attendance_count integer,
+    CONSTRAINT offline_course_attendence_record_pkey PRIMARY KEY (attendance_id)
 );
 
 CREATE TABLE IF NOT EXISTS public.offline_course_subject
@@ -145,22 +306,23 @@ CREATE TABLE IF NOT EXISTS public.offline_course_subject
 
 CREATE TABLE IF NOT EXISTS public.online_course
 (
-    online_course_id serial NOT NULL,
-    course_id integer NOT NULL,
+    online_course_id integer NOT NULL DEFAULT nextval('online_course_online_course_id_seq'::regclass),
+        course_id integer NOT NULL,
     status character varying(20) COLLATE pg_catalog."default" DEFAULT 'upcoming'::character varying,
     created_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     updated_at timestamp without time zone DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT online_course_id_pkey PRIMARY KEY (online_course_id)
 );
 
-CREATE TABLE IF NOT EXISTS public.online_course_attendence_record
+CREATE TABLE IF NOT EXISTS public.online_course_attendance_record
 (
-    attendence_id serial NOT NULL,
+    attendance_id integer NOT NULL DEFAULT nextval('online_course_attendence_record_attendence_id_seq'::regclass),
     online_course_id integer NOT NULL,
     subject_id integer NOT NULL,
     student_id integer NOT NULL,
-    attendence_count integer,
-    CONSTRAINT online_course_attendence_record_pkey PRIMARY KEY (attendence_id)
+    attendance_count integer,
+    CONSTRAINT online_course_attendence_record_pkey PRIMARY KEY (attendance_id),
+    CONSTRAINT online_course_attendence_record_composite_unique UNIQUE (online_course_id, subject_id, student_id)
 );
 
 CREATE TABLE IF NOT EXISTS public.online_course_old
@@ -189,22 +351,22 @@ CREATE TABLE IF NOT EXISTS public.online_course_subject
 
 CREATE TABLE IF NOT EXISTS public.qualification
 (
-    qualification_id serial NOT NULL,
-    qualification_name character varying(255) COLLATE pg_catalog."default",
+    qualification_id integer NOT NULL DEFAULT nextval('qualification_qualification_id_seq'::regclass),
+       qualification_name character varying(255) COLLATE pg_catalog."default",
     CONSTRAINT qualification_pkey PRIMARY KEY (qualification_id)
 );
 
 CREATE TABLE IF NOT EXISTS public.role
 (
-    role_id serial NOT NULL,
-    role_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
+    role_id integer NOT NULL DEFAULT nextval('role_role_id_seq'::regclass),
+         role_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
     CONSTRAINT role_pkey PRIMARY KEY (role_id)
 );
 
 CREATE TABLE IF NOT EXISTS public.student
 (
-    student_id serial NOT NULL,
-    first_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
+     student_id integer NOT NULL DEFAULT nextval('student_student_id_seq'::regclass),
+       first_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
     last_name character varying(50) COLLATE pg_catalog."default" NOT NULL,
     email character varying(250) COLLATE pg_catalog."default" NOT NULL,
     mobile_number character varying(12) COLLATE pg_catalog."default" NOT NULL,
@@ -214,8 +376,8 @@ CREATE TABLE IF NOT EXISTS public.student
 
 CREATE TABLE IF NOT EXISTS public.subject
 (
-    subject_id serial NOT NULL,
-    subject_name character varying(250) COLLATE pg_catalog."default",
+     subject_id integer NOT NULL DEFAULT nextval('subject_subject_id_seq'::regclass),
+        subject_name character varying(250) COLLATE pg_catalog."default",
     CONSTRAINT subject_pkey PRIMARY KEY (subject_id)
 );
 
@@ -242,8 +404,8 @@ CREATE TABLE IF NOT EXISTS public.users_role
 
 CREATE TABLE IF NOT EXISTS public.video
 (
-    video_id serial NOT NULL,
-    online_course_id integer,
+   video_id integer NOT NULL DEFAULT nextval('video_video_id_seq'::regclass),
+       online_course_id integer,
     subject_id integer,
     video_url character varying(255) COLLATE pg_catalog."default",
     likes integer,
@@ -271,6 +433,41 @@ ALTER TABLE IF EXISTS public.batch_student_enrollment
     ON DELETE NO ACTION;
 
 
+ALTER TABLE IF EXISTS public.coaching
+    ADD CONSTRAINT coaching_admin_id_fk FOREIGN KEY (coaching_admin_id)
+    REFERENCES public.coaching_admin (coaching_admin_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public.coaching_instructor
+    ADD CONSTRAINT coaching_id_fk FOREIGN KEY (coaching_id)
+    REFERENCES public.coaching (coaching_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public.coaching_instructor
+    ADD CONSTRAINT instructor_id_fk FOREIGN KEY (instructor_id)
+    REFERENCES public.instructor (instructor_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public.coaching_student
+    ADD CONSTRAINT coaching_id_fk FOREIGN KEY (coaching_id)
+    REFERENCES public.coaching (coaching_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public.coaching_student
+    ADD CONSTRAINT student_id_fk FOREIGN KEY (student_id)
+    REFERENCES public.student (student_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
 ALTER TABLE IF EXISTS public.comment
     ADD CONSTRAINT comment_student_id_fkey FOREIGN KEY (student_id)
     REFERENCES public.student (student_id) MATCH SIMPLE
@@ -286,36 +483,43 @@ ALTER TABLE IF EXISTS public.comment
 
 
 ALTER TABLE IF EXISTS public.course
+    ADD CONSTRAINT coaching_id_fk FOREIGN KEY (coaching_id)
+    REFERENCES public.coaching (coaching_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public.course
     ADD CONSTRAINT course_type_fk FOREIGN KEY (course_type_id)
     REFERENCES public.course_type (course_type_id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
 
 
-ALTER TABLE IF EXISTS public.date_offline_course_attendence
+ALTER TABLE IF EXISTS public.date_offline_course_attendance
     ADD CONSTRAINT date_id_fkey FOREIGN KEY (date_id)
     REFERENCES public.date_table (date_id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
 
 
-ALTER TABLE IF EXISTS public.date_offline_course_attendence
-    ADD CONSTRAINT offline_attendence_id_fkey FOREIGN KEY (attendence_id)
-    REFERENCES public.offline_course_attendence_record (attendence_id) MATCH SIMPLE
+ALTER TABLE IF EXISTS public.date_offline_course_attendance
+    ADD CONSTRAINT offline_attendence_id_fkey FOREIGN KEY (attendance_id)
+    REFERENCES public.offline_course_attendance_record (attendance_id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
 
 
-ALTER TABLE IF EXISTS public.date_online_course_attendence
+ALTER TABLE IF EXISTS public.date_online_course_attendance
     ADD CONSTRAINT date_id_fkey FOREIGN KEY (date_id)
     REFERENCES public.date_table (date_id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
 
 
-ALTER TABLE IF EXISTS public.date_online_course_attendence
-    ADD CONSTRAINT online_attendence_id_fkey FOREIGN KEY (attendence_id)
-    REFERENCES public.online_course_attendence_record (attendence_id) MATCH SIMPLE
+ALTER TABLE IF EXISTS public.date_online_course_attendance
+    ADD CONSTRAINT online_attendence_id_fkey FOREIGN KEY (attendance_id)
+    REFERENCES public.online_course_attendance_record (attendance_id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
 
@@ -380,14 +584,14 @@ CREATE INDEX IF NOT EXISTS offline_course_pkey
     ON public.offline_course(course_id);
 
 
-ALTER TABLE IF EXISTS public.offline_course_attendence_record
+ALTER TABLE IF EXISTS public.offline_course_attendance_record
     ADD CONSTRAINT offline_course_attendence_record_batch_student_enrollment_fkey FOREIGN KEY (batch_id, student_id)
     REFERENCES public.batch_student_enrollment (batch_id, student_id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
 
 
-ALTER TABLE IF EXISTS public.offline_course_attendence_record
+ALTER TABLE IF EXISTS public.offline_course_attendance_record
     ADD CONSTRAINT offline_course_attendence_record_course_id_subject_id_fkey FOREIGN KEY (course_id, subject_id)
     REFERENCES public.offline_course_subject (course_id, subject_id) MATCH SIMPLE
     ON UPDATE NO ACTION
@@ -415,16 +619,23 @@ ALTER TABLE IF EXISTS public.online_course
     ON DELETE NO ACTION;
 
 
-ALTER TABLE IF EXISTS public.online_course_attendence_record
-    ADD CONSTRAINT online_course_attendence_record_online_course_id_subject_fkey FOREIGN KEY (online_course_id, subject_id)
-    REFERENCES public.online_course_subject (online_course_id, subject_id) MATCH SIMPLE
+ALTER TABLE IF EXISTS public.online_course_attendance_record
+    ADD CONSTRAINT online_course_attendence_record_online_course_id_fkey FOREIGN KEY (online_course_id)
+    REFERENCES public.online_course (online_course_id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
 
 
-ALTER TABLE IF EXISTS public.online_course_attendence_record
-    ADD CONSTRAINT online_course_attendence_record_student_enrollment_fkey FOREIGN KEY (online_course_id, student_id)
-    REFERENCES public.online_course_student_enrollment (online_course_id, student_id) MATCH SIMPLE
+ALTER TABLE IF EXISTS public.online_course_attendance_record
+    ADD CONSTRAINT online_course_attendence_record_student_id_fkey FOREIGN KEY (student_id)
+    REFERENCES public.student (student_id) MATCH SIMPLE
+    ON UPDATE NO ACTION
+    ON DELETE NO ACTION;
+
+
+ALTER TABLE IF EXISTS public.online_course_attendance_record
+    ADD CONSTRAINT online_course_attendence_record_subject_id_fkey FOREIGN KEY (subject_id)
+    REFERENCES public.subject (subject_id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
 
@@ -492,5 +703,61 @@ ALTER TABLE IF EXISTS public.video
     REFERENCES public.subject (subject_id) MATCH SIMPLE
     ON UPDATE NO ACTION
     ON DELETE NO ACTION;
+
+ALTER SEQUENCE public.attendence_record_attendence_id_seq
+    OWNED BY public.offline_course_attendance_record.attendance_id;
+
+
+ALTER SEQUENCE public.batch_batch_id_seq
+    OWNED BY public.batch.batch_id;
+
+
+    ALTER SEQUENCE public.coaching_admin_coaching_admin_id_seq
+        OWNED BY public.coaching_admin.coaching_admin_id;
+
+        ALTER SEQUENCE public.coaching_coaching_id_seq
+            OWNED BY public.coaching.coaching_id;
+
+ALTER SEQUENCE public.course_type_course_type_id_seq
+    OWNED BY public.course_type.course_type_id;
+
+ALTER SEQUENCE public.comment_comment_id_seq
+    OWNED BY public.comment.comment_id;
+
+ALTER SEQUENCE public.online_course_online_course_id_seq
+    OWNED BY public.online_course_old.online_course_id;
+
+    ALTER SEQUENCE public.course_id_seq
+        OWNED BY public.course.course_id;
+
+    ALTER SEQUENCE public.date_table_date_id_seq
+        OWNED BY public.date_table.date_id;
+            ALTER SEQUENCE public.qualification_qualification_id_seq
+                OWNED BY public.qualification.qualification_id;
+
+    ALTER SEQUENCE public.video_video_id_seq
+        OWNED BY public.video.video_id;
+
+ALTER SEQUENCE public.role_role_id_seq
+    OWNED BY public.role.role_id;
+
+
+            ALTER SEQUENCE public.online_course_attendence_record_attendence_id_seq
+                OWNED BY public.online_course_attendance_record.attendance_id;
+
+
+        ALTER SEQUENCE public.instructor_id_seq
+            OWNED BY public.instructor.instructor_id;
+
+    ALTER SEQUENCE public.student_student_id_seq
+        OWNED BY public.student.student_id;
+
+
+ALTER SEQUENCE public.user_user_id_seq
+    OWNED BY public.users.user_id;
+
+
+        ALTER SEQUENCE public.subject_subject_id_seq
+            OWNED BY public.subject.subject_id;
 
 END;

@@ -1,7 +1,4 @@
 package com.bjcms.dto.course;
-
-import com.bjcms.entity.course.Subject;
-
 import java.util.ArrayList;
 import java.util.List;
 

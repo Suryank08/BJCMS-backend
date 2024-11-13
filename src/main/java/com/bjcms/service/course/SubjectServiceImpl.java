@@ -1,11 +1,5 @@
 package com.bjcms.service.course;
 
-import java.util.List;
-import java.util.Optional;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.bjcms.dao.course.SubjectDao;
 import com.bjcms.entity.course.Subject;
 import com.bjcms.entity.course.offline.OfflineCourse;
@@ -15,8 +9,12 @@ import com.bjcms.entity.instructor.Instructor;
 import com.bjcms.service.course.offline.OfflineCourseService;
 import com.bjcms.service.course.online.OnlineCourseService;
 import com.bjcms.service.course.online.VideoService;
-
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SubjectServiceImpl implements SubjectService {
@@ -104,6 +102,10 @@ public class SubjectServiceImpl implements SubjectService {
     public void deleteAllSubject() {
         List<Subject> subjects = subjectDao.findAll();
         subjects.forEach(subject -> subjectDao.delete(subject));
+    }
+
+    public List<Subject> findAllSubjectByIds(List<Integer> subjectIdsList){
+        return subjectDao.findAllById(subjectIdsList);
     }
 
 }

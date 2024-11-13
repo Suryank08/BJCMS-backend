@@ -1,9 +1,9 @@
 package com.bjcms.service.instructor;
 
+import com.bjcms.entity.instructor.Qualification;
+
 import java.util.List;
 import java.util.Optional;
-
-import com.bjcms.entity.instructor.Qualification;
 
 public interface QualificationService {
 
@@ -20,6 +20,8 @@ public interface QualificationService {
     public Qualification updateQualification(Qualification qualification);
 
     public Qualification findQualification(Integer id);
+
+    public List<Qualification> findAllQualificationBysIds(List<Integer> qualificationIdsList);
     
     public Optional<Qualification> findByQualificationId(Integer id);
 

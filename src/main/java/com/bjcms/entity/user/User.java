@@ -13,7 +13,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
@@ -73,6 +76,14 @@ public class User implements UserDetails {
         this.mobileNumber = mobileNumber;
         this.password = password;
         this.roles=roles;
+    }
+
+    public User(String firstName, String lastName, String email, String mobileNumber, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.mobileNumber = mobileNumber;
+        this.password = password;
     }
 
     @Override

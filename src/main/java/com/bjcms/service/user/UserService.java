@@ -1,8 +1,7 @@
 package com.bjcms.service.user;
 
 import com.bjcms.entity.user.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import com.bjcms.responses.UserRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +11,7 @@ public interface UserService {
     public User addUser(User user);
     public void deleteUser(int id);
 
-    public User updateUser(User user);
+    public User updateUser(UserRequest userRequest,String email);
 
     public User findUser(int id);
 
@@ -21,4 +20,5 @@ public interface UserService {
     public Optional<User> findByUserId(Integer id);
 
     public User authenticateUser(User credentials);
+    public  User findUserByEmail(String email);
 }

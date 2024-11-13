@@ -1,12 +1,5 @@
 package com.bjcms.dto.course;
 
-import com.bjcms.entity.course.offline.OfflineCourse;
-import com.bjcms.entity.student.Student;
-import jakarta.persistence.*;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class BatchDto {
 
     private Integer batchId;

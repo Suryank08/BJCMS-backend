@@ -1,15 +1,17 @@
 package com.bjcms.entity.course;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import com.bjcms.entity.coaching.Coaching;
 import com.bjcms.entity.course.offline.OfflineCourse;
 import com.bjcms.entity.course.online.OnlineCourse;
 import com.bjcms.entity.instructor.Instructor;
-import com.fasterxml.jackson.annotation.*;
-
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 //@Data
 //@Builder
@@ -52,12 +54,17 @@ public class Course {
     private OfflineCourse offlineCourse;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JsonManagedReference
     @JoinTable(name = "instructor_course", joinColumns = @JoinColumn(name = "course_id"),inverseJoinColumns = @JoinColumn(name = "instructor_id"))
-    List<Instructor> instructorList =new ArrayList<>();
+   private List<Instructor> instructorList =new ArrayList<>();
 
-    public Course(Integer courseId, String courseImage,String courseName, String courseDuration, String courseCost, String courseDescription, Date startDate, Date endDate, CourseType courseType, OnlineCourse onlineCourse, OfflineCourse offlineCourse, List<Instructor> instructorList) {
+    @ManyToOne(fetch = FetchType.LAZY , cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+    })
+    @JoinColumn(name = "coaching_id")
+    private Coaching coaching;
+
+    public Course(Integer courseId, String courseImage, String courseName, String courseDuration, String courseCost, String courseDescription, Date startDate, Date endDate, CourseType courseType, OnlineCourse onlineCourse, OfflineCourse offlineCourse, List<Instructor> instructorList, Coaching coaching) {
         this.courseId = courseId;
+        this.courseImage = courseImage;
         this.courseName = courseName;
         this.courseDuration = courseDuration;
         this.courseCost = courseCost;
@@ -68,7 +75,7 @@ public class Course {
         this.onlineCourse = onlineCourse;
         this.offlineCourse = offlineCourse;
         this.instructorList = instructorList;
-        this.courseImage=courseImage;
+        this.coaching = coaching;
     }
 
     public Course() {
@@ -170,4 +177,11 @@ public class Course {
         this.instructorList = instructorList;
     }
 
+    public Coaching getCoaching() {
+        return coaching;
+    }
+
+    public void setCoaching(Coaching coaching) {
+        this.coaching = coaching;
+    }
 }

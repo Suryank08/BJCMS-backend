@@ -1,24 +1,30 @@
 package com.bjcms.service.course;
 
 
+import com.bjcms.dto.course.CourseDto;
+import com.bjcms.dto.course.CourseSummaryDto;
+import com.bjcms.dto.course.SubjectDto;
+import com.bjcms.entity.course.Course;
+import com.bjcms.responses.CourseCreationRequest;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import com.bjcms.entity.course.Course;
-
 public interface CourseService {
     public List<Course> addCourses(List<Course> courseList);
-    public Course addCourse(Course course,String email);
+    public Course addCourse(CourseCreationRequest courseCreationRequest, String email);
     public void deleteCourse(int id);
 
     public Course updateCourse(Course course);
 
     public Course findCourse(int id);
 
-    public List<Course> getAllCourse();
+    public List<Course> getAllCourseByCoachingId( Integer coachingId);
     public Optional<Course> findByCourseId(Integer id);
     public Course enrollStudentInCourse(Integer courseId, String email, Integer batchId);
     public List<Course>enrolledCourses(String userName);
-    public List<Course>instructorCourses(String userName);
+    public List<CourseDto>instructorCourses(String userName);
+    public List<CourseSummaryDto> getAllCoursesSummaryByCoachingId(Integer coachingId);
 }

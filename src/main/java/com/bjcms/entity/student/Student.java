@@ -1,16 +1,15 @@
 package com.bjcms.entity.student;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.bjcms.entity.coaching.Coaching;
 import com.bjcms.entity.course.offline.Batch;
 import com.bjcms.entity.course.online.Comment;
 import com.bjcms.entity.course.online.OnlineCourse;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "student")
@@ -19,7 +18,7 @@ public class Student {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "student_id")
-    private int studentId;
+    private Integer studentId;
     @Column(name = "first_name")
     private String firstName;
     @Column(name = "last_name")
@@ -30,19 +29,21 @@ public class Student {
     private String mobileNumber;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JsonBackReference
     @JoinTable(name = "online_course_student_enrollment", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "online_course_id"))
     private List<OnlineCourse> onlineCourseList = new ArrayList<>();
 
     @OneToMany(mappedBy = "student")
-    List<Comment> commentList = new ArrayList<>();
+    private List<Comment> commentList = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JsonBackReference
     @JoinTable(name = "batch_student_enrollment", joinColumns = @JoinColumn(name = "student_id"), inverseJoinColumns = @JoinColumn(name = "batch_id"))
-    List<Batch> batchList = new ArrayList<>();
+   private List<Batch> batchList = new ArrayList<>();
 
-    public Student(int studentId, String firstName, String lastName, String email, String mobileNumber, List<OnlineCourse> onlineCourseList, List<Comment> commentList, List<Batch> batchList) {
+    @ManyToMany(cascade ={CascadeType.PERSIST,CascadeType.MERGE},fetch = FetchType.LAZY)
+    @JoinTable(name = "coaching_student",joinColumns = @JoinColumn(name = "student_id"),inverseJoinColumns = @JoinColumn(name = "coaching_id"))
+    private List<Coaching> coachingList=new ArrayList<>();
+
+    public Student(Integer studentId, String firstName, String lastName, String email, String mobileNumber, List<OnlineCourse> onlineCourseList, List<Comment> commentList, List<Batch> batchList, List<Coaching> coachingList) {
         this.studentId = studentId;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -51,16 +52,17 @@ public class Student {
         this.onlineCourseList = onlineCourseList;
         this.commentList = commentList;
         this.batchList = batchList;
+        this.coachingList = coachingList;
     }
 
     public Student() {
     }
 
-    public int getStudentId() {
+    public Integer getStudentId() {
         return studentId;
     }
 
-    public void setStudentId(int studentId) {
+    public void setStudentId(Integer studentId) {
         this.studentId = studentId;
     }
 
@@ -118,5 +120,13 @@ public class Student {
 
     public void setBatchList(List<Batch> batchList) {
         this.batchList = batchList;
+    }
+
+    public List<Coaching> getCoachingList() {
+        return coachingList;
+    }
+
+    public void setCoachingList(List<Coaching> coachingList) {
+        this.coachingList = coachingList;
     }
 }

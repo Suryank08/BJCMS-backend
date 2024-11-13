@@ -11,7 +11,9 @@ import com.bjcms.dao.instructor.InstructorDao;
 import com.bjcms.dao.student.StudentDao;
 import com.bjcms.dao.user.RoleDao;
 import com.bjcms.dao.user.UserDao;
+import com.bjcms.dto.coaching.CoachingDto;
 import com.bjcms.dto.course.*;
+import com.bjcms.entity.coaching.Coaching;
 import com.bjcms.entity.course.Course;
 import com.bjcms.entity.course.CourseType;
 import com.bjcms.entity.course.Subject;
@@ -23,16 +25,14 @@ import com.bjcms.entity.instructor.Instructor;
 import com.bjcms.entity.student.Student;
 import com.bjcms.entity.user.Role;
 import com.bjcms.entity.user.User;
+import com.bjcms.responses.CourseCreationRequest;
+import com.bjcms.service.coaching.CoachingService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.*;
 
 @Service
 public class CourseServiceImpl implements CourseService {
@@ -47,9 +47,10 @@ public class CourseServiceImpl implements CourseService {
     private VideoDao videoDao;
     private InstructorDao instructorDao;
     private BatchDao batchDao;
+    private CoachingService coachingService;
 
     @Autowired
-    public CourseServiceImpl(CourseDao courseDao, BatchDao batchDao, SubjectDao subjectDao, InstructorDao instructorDao, VideoDao videoDao, CourseTypeDao courseTypeDao, UserDao userDao, StudentDao studentDao, RoleDao roleDao, OnlineCourseDao onlineCourseDao, OfflineCourseDao offlineCourseDao) {
+    public CourseServiceImpl(CourseDao courseDao,CoachingService coachingService, BatchDao batchDao, SubjectDao subjectDao, InstructorDao instructorDao, VideoDao videoDao, CourseTypeDao courseTypeDao, UserDao userDao, StudentDao studentDao, RoleDao roleDao, OnlineCourseDao onlineCourseDao, OfflineCourseDao offlineCourseDao) {
         this.courseDao = courseDao;
         this.courseTypeDao = courseTypeDao;
         this.userDao = userDao;
@@ -61,14 +62,28 @@ public class CourseServiceImpl implements CourseService {
         this.videoDao = videoDao;
         this.instructorDao = instructorDao;
         this.batchDao = batchDao;
+        this.coachingService=coachingService;
     }
 
     @Transactional
-    public Course addCourse(Course course, String email) {
-        System.out.println("Starting addCourse method" + course);
-
+    public Course addCourse(CourseCreationRequest courseCreationRequest, String email) {
+        System.out.println("Starting addCourse method" + courseCreationRequest);
+        Course course =new Course();
         // Handling CourseType
-        CourseType courseType = course.getCourseType();
+        course.setCourseImage(courseCreationRequest.getCourseImage());
+        course.setCourseName(courseCreationRequest.getCourseName());
+        course.setCourseDuration(courseCreationRequest.getCourseDuration());
+        course.setCourseCost(courseCreationRequest.getCourseCost());
+        course.setCourseDescription(courseCreationRequest.getCourseDescription());
+        course.setStartDate(courseCreationRequest.getStartDate());
+        course.setEndDate(courseCreationRequest.getEndDate());
+        Coaching coaching=coachingService.findCoachingByCoachingId(Integer.parseInt(courseCreationRequest.getCoachingId()));
+        if(coaching!=null){
+            course.setCoaching(coaching);
+        }else {
+            throw new IllegalArgumentException("Coaching Id Not Found");
+        }
+        CourseType courseType = courseCreationRequest.getCourseType();
         if (courseType != null && courseType.getCourseTypeName() != null && !courseType.getCourseTypeName().isEmpty()) {
             Optional<CourseType> existingCourseType = courseTypeDao.findByCourseTypeName(courseType.getCourseTypeName());
             if (existingCourseType.isPresent()) {
@@ -84,14 +99,13 @@ public class CourseServiceImpl implements CourseService {
         System.out.println("Course saved with ID: " + savedCourse.getCourseId());
 
 //     Handling OfflineCourse
-        OfflineCourse offlineCourse = course.getOfflineCourse();
-        OnlineCourse onlineCourse = course.getOnlineCourse();
+        OfflineCourse offlineCourse = courseCreationRequest.getOfflineCourse();
+        OnlineCourse onlineCourse = courseCreationRequest.getOnlineCourse();
         if (courseType.getCourseTypeName().equals("offline") && offlineCourse != null && offlineCourse.getStatus() != null && !offlineCourse.getStatus().isEmpty()) {
             System.out.println("OfflineCourse present");
 
             offlineCourse.setCourse(savedCourse);
             OfflineCourse savedOfflineCourse = offlineCourseDao.save(offlineCourse);
-            System.out.println(savedOfflineCourse.toString());
             if (offlineCourse.getSubjectList() != null && !offlineCourse.getSubjectList().isEmpty()) {
                 System.out.println("inside Subject");
                 List<Subject> subjectList = savedOfflineCourse.getSubjectList();
@@ -135,7 +149,7 @@ public class CourseServiceImpl implements CourseService {
 
         }
         //TODO later upgrade instructor functionality to add multiple instructors for time being i am setting Course  instructorList to instructor who has currently logged in
-        List<Instructor> instructorList = course.getInstructorList();
+        List<Instructor> instructorList = courseCreationRequest.getInstructorList();
         if (instructorList != null && !instructorList.isEmpty()) {
             System.out.println("inside Instructor");
 //        for (Instructor instructor : instructorList) {
@@ -159,48 +173,6 @@ public class CourseServiceImpl implements CourseService {
         return finalSavedCourse;
     }
 
-//@Transactional
-//public Course addCourse(Course course) {
-//    System.out.println("Why this  is rnning");
-//    CourseType courseType = course.getCourseType();
-//    OfflineCourse offlineCourse = course.getOfflineCourse();
-//    OnlineCourse onlineCourse = course.getOnlineCourse();
-//Course newCourse =new Course();
-//    if (courseType != null && courseType.getCourseTypeName() != null && !courseType.getCourseTypeName().isEmpty()) {
-//        Optional<CourseType> existingCourseType = courseTypeDao.findByCourseTypeName(courseType.getCourseTypeName());
-//        if (existingCourseType.isPresent()) {
-//            course.setCourseType(existingCourseType.get());
-//        } else {
-//            courseType = courseTypeDao.save(courseType);
-//            course.setCourseType(courseType);
-//            newCourse=courseDao.save(course);
-//        }
-//    }
-//
-//    if (offlineCourse != null && offlineCourse.getStatus() != null && !offlineCourse.getStatus().isEmpty()) {
-//        System.out.println("offlineCourse Present");
-//        offlineCourseDao.save(offlineCourse);
-//        course.setOfflineCourse(offlineCourse);
-//
-//    }
-//try {
-//    if (onlineCourse != null && onlineCourse.getStatus() != null && !onlineCourse.getStatus().isEmpty()) {
-//        System.out.println("onlineCoursePresent" + onlineCourse);
-////        OnlineCourse newOnlineCourse = onlineCourseDao.save(onlineCourse);
-//        System.out.println("Exit");
-////        System.out.println("new" + newOnlineCourse);
-//        newCourse.setOnlineCourse(onlineCourse);
-//    }
-//}catch (Exception e){
-//    e.printStackTrace();
-//}
-//    System.out.println("priting setted course"+course);
-//
-//    System.out.println("Printing newCourse"+newCourse);
-//    return courseDao.save(newCourse);
-//}
-
-
     @Transactional
     public List<Course> addCourses(List<Course> courseList) {
         for (Course course : courseList) {
@@ -221,12 +193,17 @@ public class CourseServiceImpl implements CourseService {
         courseDao.delete(course);
     }
 
-    public List<Course> getAllCourse() {
-        List<Course> courseList = courseDao.findAll();
+    public List<Course> getAllCourseByCoachingId(Integer coachingId) {
+        Coaching coaching= coachingService.findCoachingByCoachingId(coachingId);
+        List<Course> courseList = coaching.getCoursesList();
         return courseList;
     }
 
-
+    public List<CourseSummaryDto> getAllCoursesSummaryByCoachingId(Integer coachingId){
+        List<Course> courseList=getAllCourseByCoachingId(coachingId);
+        List<CourseSummaryDto> courseSummaryDtoList= CourseUtil.parseCourseSummaryDto(courseList);
+        return courseSummaryDtoList;
+    }
     public Course findCourse(int id) {
         Optional<Course> optionalCourse = courseDao.findById(id);
         Course course = optionalCourse.orElse(new Course());
@@ -237,7 +214,7 @@ public class CourseServiceImpl implements CourseService {
         return courseDao.findById(id);
     }
 
-
+    @Transactional
     public Course enrollStudentInCourse(Integer courseId, String email, Integer batchId) {
 
         try {
@@ -252,13 +229,14 @@ public class CourseServiceImpl implements CourseService {
             if (user.getRoles().stream().noneMatch(role ->
                     "STUDENT".equals(role.getRoleName()) ||
                             "ADMIN".equals(role.getRoleName()) ||
+                            "CO-ADMIN".equals(role.getRoleName())||
                             "INSTRUCTOR".equals(role.getRoleName()))) {
-                student = new Student();
-                student.setFirstName(user.getFirstName());
-                student.setLastName(user.getLastName());
-                student.setMobileNumber(user.getMobileNumber());
-                student.setEmail(user.getEmail());
-                studentDao.save(student);
+                Student newStudent = new Student();
+                newStudent.setFirstName(user.getFirstName());
+                newStudent.setLastName(user.getLastName());
+                newStudent.setMobileNumber(user.getMobileNumber());
+                newStudent.setEmail(user.getEmail());
+               student= studentDao.save(newStudent);
                 user.getRoles().add(studentRole);
                 userDao.save(user);
             } else if (user.getRoles().stream().anyMatch(role -> "STUDENT".equals(role.getRoleName()))) {
@@ -267,6 +245,10 @@ public class CourseServiceImpl implements CourseService {
             } else {
                 throw new IllegalStateException("User does not have the required role.");
             }
+            Coaching coaching= course.getCoaching();
+            List<Coaching> coachingList=new ArrayList<>();
+            coachingList.add(coaching);
+            student.setCoachingList(coachingList);
 
             String courseType = course.getCourseType().getCourseTypeName();
             if ("offline".equals(courseType)) {
@@ -276,14 +258,8 @@ public class CourseServiceImpl implements CourseService {
                     student.getBatchList().add(batch);
                     studentDao.save(student);
                 } else {
-                    // Handle the case where the student is already enrolled
-                    System.out.println("Student is already enrolled in this batch.");
+                 throw  new IllegalArgumentException("Student is already enrolled in this batch.");
                 }
-//                batch.getStudentList().add(student);
-//                Batch savedBatch= batchDao.save(batch);
-//                student.getBatchList().add(batch);
-//                studentDao.save(student);
-//           course.getOfflineCourse().getBatchList().forEach(batch -> batch.getStudentList().add(student));
             } else if ("online".equals(courseType)) {
                 if (!student.getOnlineCourseList().contains(course.getOnlineCourse())) {
                     student.getOnlineCourseList().add(course.getOnlineCourse());
@@ -329,11 +305,35 @@ public class CourseServiceImpl implements CourseService {
 
     }
 
-    public List<Course>instructorCourses(String userName) {
+    public List<CourseDto>instructorCourses(String userName) {
         try {
             Instructor instructor = instructorDao.findByEmail(userName).orElseThrow(() -> new IllegalArgumentException("Can not find Instructor"));
             List<Course> courseList = instructor.getCourseList();
-            return courseList;
+            List<CourseDto> courseDtoList = courseList.stream().map(course -> {
+                Integer courseId=course.getCourseId();
+                String courseName=course.getCourseName();
+                String courseImage=course.getCourseImage();
+                String courseDuration=course.getCourseDuration();
+                String courseCost=course.getCourseCost();
+                String courseDescription=course.getCourseDescription();
+                String courseTypeName=course.getCourseType().getCourseTypeName();
+                Date startDate=course.getStartDate();
+                Date endDate =course.getEndDate();
+                String courseStatus=null;
+                List<SubjectDto> subjectDtoList=new ArrayList<>();
+                List<BatchDto> batchDtos =null;
+                if(courseTypeName.equals("offline")){
+                  courseStatus=course.getOfflineCourse().getStatus();
+                  batchDtos=course.getOfflineCourse().getBatchList().stream().map(batch -> new BatchDto(batch.getBatchId(), batch.getBatchName(), batch.getBatchTime())).toList();
+                    subjectDtoList.addAll(course.getOfflineCourse().getSubjectList().stream().map(subject -> new SubjectDto(subject.getSubjectId(),subject.getSubjectName())).toList());
+              }else if(courseTypeName.equals("online")){
+                  courseStatus=course.getOnlineCourse().getStatus();
+                  subjectDtoList.addAll(course.getOnlineCourse().getSubjectList().stream().map(subject -> new SubjectDto(subject.getSubjectId(),subject.getSubjectName())).toList());
+              }
+            return new CourseDto(courseId,courseImage,courseName,courseDuration,courseCost,courseDescription,startDate,endDate,courseTypeName,courseStatus,subjectDtoList,batchDtos);
+            }).toList();
+
+            return courseDtoList;
         } catch (Exception e) {
             throw new RuntimeException("Failed to get Instructor course", e);
         }

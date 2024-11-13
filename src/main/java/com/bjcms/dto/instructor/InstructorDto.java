@@ -1,27 +1,21 @@
 package com.bjcms.dto.instructor;
 
-import com.bjcms.entity.course.Course;
-import com.bjcms.entity.course.Subject;
-import com.bjcms.entity.instructor.InstructorInfo;
-import com.bjcms.entity.instructor.Qualification;
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class InstructorDto {
 
     private Integer instructorId;
-
     private String instructorName;
+    private String instructorEmail;
+    private String instructorInfo;
 
 
-    public InstructorDto(Integer instructorId, String instructorName) {
+    public InstructorDto(Integer instructorId, String instructorName,String instructorEmail, String instructorInfo) {
         this.instructorId = instructorId;
         this.instructorName = instructorName;
+        this.instructorInfo = instructorInfo;
+        this.instructorEmail=instructorEmail;
+
     }
 
     public InstructorDto() {
@@ -41,5 +35,21 @@ public class InstructorDto {
 
     public void setInstructorName(String instructorName) {
         this.instructorName = instructorName;
+    }
+
+    public String getInstructorEmail() {
+        return instructorEmail;
+    }
+
+    public void setInstructorEmail(String instructorEmail) {
+        this.instructorEmail = instructorEmail;
+    }
+
+    public String getInstructorInfo() {
+        return instructorInfo;
+    }
+
+    public void setInstructorInfo(String instructorInfo) {
+        this.instructorInfo = instructorInfo;
     }
 }

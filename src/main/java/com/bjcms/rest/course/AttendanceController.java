@@ -1,6 +1,5 @@
 package com.bjcms.rest.course;
 
-import com.bjcms.entity.course.Course;
 import com.bjcms.responses.AttendanceRequest;
 import com.bjcms.service.course.CourseService;
 import com.bjcms.service.course.offline.OfflineCourseAttendanceService;
@@ -14,8 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/attendances")
@@ -47,7 +44,7 @@ public class AttendanceController {
 
                         try {
                             if ("offline".equalsIgnoreCase(course.getCourseType().getCourseTypeName())) {
-                                offlineCourseAttendanceService.addAttendance();
+                                offlineCourseAttendanceService.addAttendance(attendanceRequest);
                                 return new ResponseEntity<>("Offline attendance added successfully", HttpStatus.OK);
                             } else if ("online".equalsIgnoreCase(course.getCourseType().getCourseTypeName())) {
                                 onlineCourseAttendenceService.addAttendence(attendanceRequest);
