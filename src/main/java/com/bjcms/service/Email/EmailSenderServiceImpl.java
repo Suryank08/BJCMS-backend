@@ -9,6 +9,7 @@ import com.bjcms.entity.student.Student;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,8 @@ public class EmailSenderServiceImpl implements EmailSenderService{
     private JavaMailSender mailSender;
     @Autowired
     private BatchDao batchDao;
+    @Value("${react.url}")
+    private  String reactUrl;
 
     public void sendEmail(String toEmail,String subject,String body){
         SimpleMailMessage message=new SimpleMailMessage();
@@ -46,7 +49,7 @@ public class EmailSenderServiceImpl implements EmailSenderService{
                 .append("Here are your login details:\n")
                 .append("User ID: ").append(email).append("\n")
                 .append("Password: ").append(password).append("\n\n")
-                .append("Link to Login: http://localhost:3000/")
+                .append("Link to Login:").append(reactUrl).append("/")
                 .append(coaching.getCoachingName().replace(" ", "-")).append("\n")
                 .append("Please change your password after your first login.\n")
                 .append("We’re excited to have you on board!\n\n")

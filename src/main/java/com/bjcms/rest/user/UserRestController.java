@@ -30,8 +30,7 @@ public class UserRestController {
     }
 //TODO for now use try and catch block later replace it with global exception handeling
 
-    @CrossOrigin(origins = "http://localhost:3000")
-    @PostMapping("/register")
+   @PostMapping("/register")
     public ResponseEntity<String> addUser(@RequestBody User user) {
         try {
             User registeredUser = userService.addUser(user);
