@@ -5,13 +5,10 @@ import com.bjcms.dao.coaching.CoachingDao;
 import com.bjcms.dto.coaching.CoachingDto;
 import com.bjcms.entity.coaching.Coaching;
 import com.bjcms.entity.coaching.CoachingAdmin;
-import com.bjcms.entity.instructor.Instructor;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class CoachingServiceImpl implements CoachingService {
