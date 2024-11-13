@@ -88,12 +88,14 @@ public class InstructorServiceImpl implements InstructorService {
                    return userToInstructor(user,instructorCreateRequest,coachingList);
 
                }else {
-                   String[] nameArr =instructorCreateRequest.getInstructorName().split("\\s+");
-                   String fName=nameArr[0];
-                   String lName= "";
-                   if(!nameArr[1].isEmpty()) {
+                   String[] nameArr = instructorCreateRequest.getInstructorName().split("\\s+");
+                   String fName = nameArr[0];
+                   String lName ="_";
+
+                   if (nameArr.length > 1 && !nameArr[1].isEmpty()) {
                        lName = nameArr[1];
                    }
+
                    String mobileNum=instructorCreateRequest.getMobileNumber();
                    String randomPassword= RandomPasswordGenerator.generatePassword(fName,mobileNum,email);
                    System.out.println(randomPassword);

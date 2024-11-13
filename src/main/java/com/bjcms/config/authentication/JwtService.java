@@ -1,11 +1,7 @@
 package com.bjcms.config.authentication;
 
 import com.bjcms.entity.user.User;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,12 +14,14 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    @Value("${security.jwt.secret-key}")
-    private String secretKey;
+    private final Key secretKey;
 
     @Value("${security.jwt.expiration-time}")
     private long jwtExpiration;
 
+    public JwtService() {
+        this.secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512); // Use HS512 for a strong security level
+}
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
@@ -50,7 +48,7 @@ public class JwtService {
                 .setIssuer("bjcms")  // Add issuer to verify where the token came from
                 .setAudience("web-app") // Set audience for the token
                 .setId(UUID.randomUUID().toString())
-                .signWith(getSignInKey(), SignatureAlgorithm.HS512) // Use getSignInKey and HS512
+                .signWith(secretKey, SignatureAlgorithm.HS512) // Use getSignInKey and HS512
                 .compact();
     }
 
@@ -75,7 +73,7 @@ public class JwtService {
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .setIssuer("bjcms") // Ensure issuer is the same across the app
                 .setAudience("web-app") // Ensure audience is the same across the app
-                .signWith(getSignInKey(), SignatureAlgorithm.HS512) // Use HS512 consistently
+                .signWith(secretKey, SignatureAlgorithm.HS512) // Use HS512 consistently
                 .compact();
     }
 
@@ -95,16 +93,13 @@ public class JwtService {
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()
-                .setSigningKey(getSignInKey())
+                .setSigningKey(secretKey)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
     }
 
-    private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
+
     public boolean validateToken(String token, String username) {
         try {
             // Extract username from the token
@@ -114,7 +109,9 @@ public class JwtService {
             return (extractedUsername.equals(username) && !isTokenExpired(token));
         } catch (ExpiredJwtException e) {
             return false; // Token is expired
-        } catch (Exception e) {
+        }catch (JwtException e) {
+            return false; // JWT parsing or other issues
+        }  catch (Exception e) {
             return false; // Token is invalid
         }
     }
