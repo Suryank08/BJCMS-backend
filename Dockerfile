@@ -21,10 +21,10 @@ FROM eclipse-temurin:21-jre
 WORKDIR /app
 
 # Copy the packaged JAR file from the build stage
-COPY --from=build /app/target/com.bjcms-0.0.1-SNAPSHOT.jar
+COPY --from=build /app/target/com.bjcms-0.0.1-SNAPSHOT.jar /app/app.jar
 
 # Expose the port that the app runs on
 EXPOSE 8080
 
 # Run the application
-ENTRYPOINT ["java", "-jar", "/app/target/com.bjcms-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]
