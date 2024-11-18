@@ -41,12 +41,22 @@ INSERT INTO public.qualification(qualification_id, qualification_name) VALUES
 
 
 INSERT INTO public.subject(subject_id, subject_name) VALUES
-    (NEXTVAL('public.subject_subject_id_seq'), '12th Biology'),
-    (NEXTVAL('public.subject_subject_id_seq'), '11th Maths'),
-    (NEXTVAL('public.subject_subject_id_seq'), '11th Maths'),
-    (NEXTVAL('public.subject_subject_id_seq'), '11th Physics'),
-    (NEXTVAL('public.subject_subject_id_seq'), '12th Biology'),
-    (NEXTVAL('public.subject_subject_id_seq'), '11th Maths'),
-    (NEXTVAL('public.subject_subject_id_seq'), '11th Biology'),
-    (NEXTVAL('public.subject_subject_id_seq'), '11th Physics'),
-    (NEXTVAL('public.subject_subject_id_seq'), '11th Accounts');
+  (NEXTVAL('public.subject_subject_id_seq'), '12th Biology'),
+   (NEXTVAL('public.subject_subject_id_seq'), '11th Maths'),
+   (NEXTVAL('public.subject_subject_id_seq'), '12th Maths'),
+   (NEXTVAL('public.subject_subject_id_seq'), '11th Physics'),
+   (NEXTVAL('public.subject_subject_id_seq'), '12th Physics'),
+   (NEXTVAL('public.subject_subject_id_seq'), '11th Biology'),
+   (NEXTVAL('public.subject_subject_id_seq'), '11th Accounts'),
+   (NEXTVAL('public.subject_subject_id_seq'), '12th Chemistry'),
+   (NEXTVAL('public.subject_subject_id_seq'), '12th English'),
+   (NEXTVAL('public.subject_subject_id_seq'), '12th History'),
+   (NEXTVAL('public.subject_subject_id_seq'), '11th Computer Science'),
+   (NEXTVAL('public.subject_subject_id_seq'), '11th Geography'),
+   (NEXTVAL('public.subject_subject_id_seq'), '12th Political Science'),
+   (NEXTVAL('public.subject_subject_id_seq'), '11th Economics'),
+   (NEXTVAL('public.subject_subject_id_seq'), '12th Economics'),
+   (NEXTVAL('public.subject_subject_id_seq'), '12th Psychology'),
+   (NEXTVAL('public.subject_subject_id_seq'), '11th Sociology'),
+   (NEXTVAL('public.subject_subject_id_seq'), '12th Sociology'),
+   (NEXTVAL('public.subject_subject_id_seq'), '12th Literature');
