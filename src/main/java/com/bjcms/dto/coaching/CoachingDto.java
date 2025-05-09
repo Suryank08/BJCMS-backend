@@ -8,7 +8,6 @@ public class CoachingDto {
     private Integer totalCourses;
     private Integer totalStudents;
     private Integer totalInstructor;
-
     public CoachingDto(Integer coachingId, String coachingName, String coachingVision, String coachingAddress, Integer totalCourses, Integer totalStudents, Integer totalInstructor) {
         this.coachingId = coachingId;
         this.coachingName = coachingName;
